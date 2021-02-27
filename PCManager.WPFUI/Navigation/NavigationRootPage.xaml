@@ -1,0 +1,158 @@
+﻿<UserControl
+    x:Class="PCManager.WPFUI.Navigation.NavigationRootPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:common="clr-namespace:PCManager.WPFUI.Common"
+    xmlns:ui="http://schemas.modernwpf.com/2019"
+    xmlns:local="clr-namespace:PCManager.WPFUI"
+    mc:Ignorable="d"
+    d:DesignWidth="1200"
+    d:DesignHeight="900"
+    Background="{DynamicResource SystemControlPageBackgroundAltHighBrush}">
+
+    <UserControl.Resources>
+        <common:EqualsConverter
+            x:Key="IsDefaultConverter"
+            Value="{x:Null}" />
+        <common:EqualsConverter
+            x:Key="IsLightConverter"
+            Value="{x:Static ui:ApplicationTheme.Light}" />
+        <common:EqualsConverter
+            x:Key="IsDarkConverter"
+            Value="{x:Static ui:ApplicationTheme.Dark}" />
+    </UserControl.Resources>
+
+    <Grid x:Name="LayoutRoot">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <Menu>
+                <MenuItem Header="Theme">
+                </MenuItem>
+                <MenuItem
+                    x:Name="PresetsMenu"
+                    Header="Presets">
+                    <ui:RadioMenuItem
+                        Header="Default"
+                        IsChecked="True" />
+                    <ui:RadioMenuItem Header="Forest" />
+                    <ui:RadioMenuItem Header="Lavender" />
+                    <ui:RadioMenuItem Header="Nighttime" />
+                </MenuItem>
+                <MenuItem
+                    Header="Sizing">
+                    <ui:RadioMenuItem
+                        Header="Standard"
+                        IsChecked="True" />
+                    <ui:RadioMenuItem
+                        Header="Compact"
+                        Tag="Compact" />
+                </MenuItem>
+                <MenuItem
+                    Header="Title Bar"
+                    DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}}">
+                    <MenuItem
+                        Header="IsBackButtonVisible"
+                        IsEnabled="False"
+                        IsCheckable="True"
+                        IsChecked="{Binding Path=(ui:TitleBar.IsBackButtonVisible), Mode=OneWay}" />
+                    <MenuItem
+                        Header="IsIconVisible"
+                        IsCheckable="True"
+                        IsChecked="{Binding Path=(ui:TitleBar.IsIconVisible)}" />
+                </MenuItem>
+                <MenuItem Header="Shadows">
+                    <ui:RadioMenuItem
+                        x:Name="ShadowsAuto"
+                        Header="Use system setting"
+                        IsChecked="True"/>
+                    <ui:RadioMenuItem
+                        x:Name="ShadowsEnabled"
+                        Header="Enabled"/>
+                    <ui:RadioMenuItem
+                        x:Name="ShadowsDisabled"
+                        Header="Disabled"/>
+                </MenuItem>
+                <MenuItem Header="Settings">
+                    <MenuItem Header="Automatically hide scroll bars">
+                        <ui:RadioMenuItem
+                            x:Name="AutoHideScrollBarsAuto"
+                            Header="Use system setting"
+                            IsChecked="True"/>
+                        <ui:RadioMenuItem
+                            x:Name="AutoHideScrollBarsOn"
+                            Header="On"/>
+                        <ui:RadioMenuItem
+                            x:Name="AutoHideScrollBarsOff"
+                            Header="Off"/>
+                    </MenuItem>
+                </MenuItem>
+                <MenuItem
+                    x:Name="DebugMenuItem"
+                    Header="Debug"
+                    Visibility="Collapsed">
+                    <MenuItem
+                        Header="Force GC"/>
+                    <MenuItem
+                        x:Name="NewWindowMenuItem"
+                        Header="New window"
+                        Visibility="Collapsed"/>
+                </MenuItem>
+            </Menu>
+
+            <ui:CommandBar
+                x:Name="TopCommandBar"
+                Grid.Column="1"
+                Margin="0,0,12,0"
+                Background="Transparent"
+                DefaultLabelPosition="Right">
+                <ui:AppBarButton x:Name="ThemeButton" Label="Toggle Theme">
+                    <ui:AppBarButton.Icon>
+                        <ui:FontIcon
+                            Glyph="&#xE771;"
+                            Margin="0,-2,0,0" />
+                    </ui:AppBarButton.Icon>
+                </ui:AppBarButton>
+            </ui:CommandBar>
+        </Grid>
+
+        <DockPanel
+            Grid.Row="1"
+            Background="{DynamicResource NavigationViewExpandedPaneBackground}">
+            <ui:AutoSuggestBox
+                x:Name="controlsSearchBox"
+                DockPanel.Dock="Top"
+                Margin="12"
+                PlaceholderText="Search"
+                QueryIcon="Find">
+            </ui:AutoSuggestBox>
+
+
+            <ui:ListView
+                x:Name="PagesList"
+                DockPanel.Dock="Top"
+                DisplayMemberPath="Title"
+                SelectedValuePath="PageType"
+                SelectedIndex="0">
+                <ui:ListView.ItemsSource>
+                    <local:ControlPagesData />
+                </ui:ListView.ItemsSource>
+            </ui:ListView>
+        </DockPanel>
+    </Grid>
+
+</UserControl>

@@ -1,0 +1,23 @@
+﻿<Window
+    x:Class="PCManager.WPFUI.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:PCManager.WPFUI"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="http://schemas.modernwpf.com/2019"
+    xmlns:navigation="clr-namespace:PCManager.WPFUI.Navigation"
+    x:Name="Window"
+    Title="PC Manager"
+    Width="500"
+    Height="300"
+    ui:ThemeManager.IsThemeAware="True"
+    ui:WindowHelper.UseModernWindowStyle="True"
+    Background="{DynamicResource SystemControlPageBackgroundAltHighBrush}"
+    Foreground="{DynamicResource SystemControlPageTextBaseHighBrush}"
+    ResizeMode="CanResizeWithGrip"
+    WindowStartupLocation="CenterScreen">
+
+
+    <navigation:NavigationRootPage x:Name="RootPage" />
+</Window>

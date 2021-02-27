@@ -1,0 +1,19 @@
+﻿<Application
+    x:Class="PCManager.WPFUI.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:PCManager.WPFUI.Converters;assembly=PCManager.WPFUI"
+    xmlns:local="clr-namespace:PCManager.WPFUI"
+    xmlns:sc="clr-namespace:PCManager.WPFUI;assembly=PCManager.WPFUI"
+    xmlns:ui="http://schemas.modernwpf.com/2019"
+    StartupUri="MainWindow.xaml">
+
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:ThemeResources RequestedTheme="Dark" />
+                <ui:XamlControlsResources />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
