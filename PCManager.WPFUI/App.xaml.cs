@@ -13,6 +13,5 @@ namespace PCManager.WPFUI
     /// </summary>
     public partial class App
     {
-        public static bool IsMultiThreaded { get; } = false;
     }
 }

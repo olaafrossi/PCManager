@@ -1,0 +1,12 @@
+
+[*]
+
+# Microsoft .NET properties
+csharp_prefer_braces = true:none
+
+# ReSharper properties
+resharper_braces_redundant = true
+
+csharp_using_directive_placement = outside_namespace
+
+xmlHeader = false
