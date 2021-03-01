@@ -36,6 +36,11 @@
 
   
     <ItemGroup>
+      <ProjectReference Include="..\..\ThreeByteLibrary\ThreeByteLibrary.Dotnet\ThreeByteLibrary.Dotnet.csproj" />
+    </ItemGroup>
+
+  
+    <ItemGroup>
       <Compile Update="Properties\Settings.Designer.cs">
         <DesignTimeSharedInput>True</DesignTimeSharedInput>
         <AutoGen>True</AutoGen>
