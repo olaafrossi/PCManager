@@ -10,6 +10,9 @@
     <FileVersion>0.0.0.0</FileVersion>
     <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
     <ApplicationIcon>Assets\3byteSquareICO.ico</ApplicationIcon>
+    <Authors>Chris Keitel, Olaaf Rossi</Authors>
+    <Company>Three Byte Intermedia, Inc</Company>
+    <Copyright>Three Byte Intermedia, Inc 2021</Copyright>
   </PropertyGroup>
 
   
@@ -18,6 +21,11 @@
     <PackageReference Include="JetBrains.Annotations" Version="2021.1.0-eap01" />
     <PackageReference Include="OSVersionHelper" Version="1.1.24" />
     <PackageReference Include="AppInsights.WindowsDesktop" Version="2.17.1" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
+    <PackageReference Include="Serilog.Extensions.Hosting" Version="3.1.0" />
+    <PackageReference Include="Serilog.Settings.Configuration" Version="3.1.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
+    <PackageReference Include="Serilog.Sinks.EventLog" Version="3.1.0" />
   </ItemGroup>
 
   

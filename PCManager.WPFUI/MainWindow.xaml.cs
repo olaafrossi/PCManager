@@ -9,8 +9,12 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Data;
 
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Serilog;
+using Serilog.Events;
 using ModernWpf.Controls;
-
 using PCManager.WPFUI.Helpers;
 using PCManager.WPFUI.Navigation;
 using PCManager.WPFUI.Properties;
@@ -31,6 +35,43 @@ namespace PCManager.WPFUI
                 new Binding { Path = new PropertyPath(System.Windows.Controls.Frame.CanGoBackProperty), Source = rootFrame });
 
             SubscribeToResourcesChanged();
+        }
+
+        public void SetupApp()
+        {
+            var builder = new ConfigurationBuilder();
+            BuildConfig(builder);
+
+            Log.Logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(builder.Build())
+                .Enrich.FromLogContext()
+                .WriteTo.Console()
+                .WriteTo.EventLog("ThreeByteCrestronNetworkMonitor",
+                    "Application", ".", false,
+                    "{Message}", restrictedToMinimumLevel: LogEventLevel.Verbose, eventIdProvider: null,
+                    formatProvider: null)
+                .CreateLogger();
+
+            // write our first log message
+            WriteLine($"{DateTime.Now:HH:mm:ss.fff} | Application Starting");
+
+            var host = Host.CreateDefaultBuilder()
+                .ConfigureServices((context, services) =>
+                    {
+                        services.AddTransient<IPcNetworkListener, PcNetworkListener>();
+                    })
+                .UseSerilog()
+                .Build();
+        }
+
+        static void BuildConfig(IConfigurationBuilder builder)
+        {
+            builder.SetBasePath("C:\\ThreeByteIntermedia\\CrestronNetworkMonitor\\Settings\\")
+                .AddJsonFile("appsettings.json", false, true)
+                .AddJsonFile(
+                    $"appsettings.json.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json",
+                    true)
+                .AddEnvironmentVariables();
         }
 
         protected override void OnSourceInitialized(EventArgs e)
