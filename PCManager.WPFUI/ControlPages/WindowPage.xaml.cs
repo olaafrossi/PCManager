@@ -22,13 +22,6 @@ namespace PCManager.WPFUI.ControlPages
             }
         }
 
-        //private void OpenWindow(object sender, RoutedEventArgs e)
-        //{
-        //    var window = new WindowWithCustomTitleBar
-        //    {
-        //        Owner = Window.GetWindow(this)
-        //    };
-        //    window.ShowDialog();
-        //}
+
     }
 }

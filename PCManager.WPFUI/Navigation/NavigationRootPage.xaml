@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:common="clr-namespace:PCManager.WPFUI.Common"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helpers="clr-namespace:PCManager.WPFUI.Helpers"
     xmlns:local="clr-namespace:PCManager.WPFUI"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.modernwpf.com/2019"
@@ -35,92 +36,69 @@
             </Grid.ColumnDefinitions>
 
             <Menu>
-                <MenuItem Header="Theme" />
-                <MenuItem x:Name="PresetsMenu" Header="Presets">
-                    <ui:RadioMenuItem Header="Default" IsChecked="True" />
-                    <ui:RadioMenuItem Header="Forest" />
-                    <ui:RadioMenuItem Header="Lavender" />
-                    <ui:RadioMenuItem Header="Nighttime" />
-                </MenuItem>
-                <MenuItem Header="Sizing">
-                    <ui:RadioMenuItem Header="Standard" IsChecked="True" />
-                    <ui:RadioMenuItem Header="Compact" Tag="Compact" />
-                </MenuItem>
-                <MenuItem DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}}" Header="Title Bar">
-                    <MenuItem
-                        Header="IsBackButtonVisible"
-                        IsCheckable="True"
-                        IsChecked="{Binding Path=(ui:TitleBar.IsBackButtonVisible), Mode=OneWay}"
-                        IsEnabled="False" />
-                    <MenuItem
-                        Header="IsIconVisible"
-                        IsCheckable="True"
-                        IsChecked="{Binding Path=(ui:TitleBar.IsIconVisible)}" />
-                </MenuItem>
-                <MenuItem Header="Shadows">
-                    <ui:RadioMenuItem
-                        x:Name="ShadowsAuto"
-                        Header="Use system setting"
-                        IsChecked="True" />
-                    <ui:RadioMenuItem x:Name="ShadowsEnabled" Header="Enabled" />
-                    <ui:RadioMenuItem x:Name="ShadowsDisabled" Header="Disabled" />
-                </MenuItem>
+
+
                 <MenuItem Header="Settings">
                     <MenuItem Header="Automatically hide scroll bars">
                         <ui:RadioMenuItem
                             x:Name="AutoHideScrollBarsAuto"
+                            Checked="AutoHideScrollBarsAuto_Checked"
                             Header="Use system setting"
                             IsChecked="True" />
-                        <ui:RadioMenuItem x:Name="AutoHideScrollBarsOn" Header="On" />
-                        <ui:RadioMenuItem x:Name="AutoHideScrollBarsOff" Header="Off" />
+                        <ui:RadioMenuItem
+                            x:Name="AutoHideScrollBarsOn"
+                            Checked="AutoHideScrollBarsOn_Checked"
+                            Header="On" />
+                        <ui:RadioMenuItem
+                            x:Name="AutoHideScrollBarsOff"
+                            Checked="AutoHideScrollBarsOff_Checked"
+                            Header="Off" />
                     </MenuItem>
+                </MenuItem>
+                <MenuItem Header="Sizing" MenuItem.Click="SizingMenuItem_Click">
+                    <ui:RadioMenuItem Header="Standard" IsChecked="True" />
+                    <ui:RadioMenuItem Header="Compact" Tag="Compact" />
                 </MenuItem>
                 <MenuItem
                     x:Name="DebugMenuItem"
                     Header="Debug"
                     Visibility="Collapsed">
-                    <MenuItem Header="Force GC" />
+                    <MenuItem Click="ForceGC" Header="Force GC" />
                     <MenuItem
                         x:Name="NewWindowMenuItem"
+                        Click="NewWindow"
                         Header="New window"
                         Visibility="Collapsed" />
                 </MenuItem>
             </Menu>
-
-            <ui:CommandBar
-                x:Name="TopCommandBar"
-                Grid.Column="1"
-                Margin="0,0,12,0"
-                Background="Transparent"
-                DefaultLabelPosition="Right">
-                <ui:AppBarButton x:Name="ThemeButton" Label="Toggle Theme">
-                    <ui:AppBarButton.Icon>
-                        <ui:FontIcon Margin="0,-2,0,0" Glyph="&#xE771;" />
-                    </ui:AppBarButton.Icon>
-                </ui:AppBarButton>
-            </ui:CommandBar>
         </Grid>
-
         <DockPanel Grid.Row="1" Background="{DynamicResource NavigationViewExpandedPaneBackground}">
             <ui:AutoSuggestBox
-                x:Name="controlsSearchBox"
+                x:Name="ControlsSearchBox"
                 Margin="12"
                 DockPanel.Dock="Top"
                 PlaceholderText="Search"
-                QueryIcon="Find" />
-
-
+                QueryIcon="Find"
+                QuerySubmitted="OnControlsSearchBoxQuerySubmitted"
+                TextChanged="OnControlsSearchBoxTextChanged" />
             <ui:ListView
                 x:Name="PagesList"
                 DisplayMemberPath="Title"
                 DockPanel.Dock="Top"
                 SelectedIndex="0"
-                SelectedValuePath="PageType">
+                SelectedValuePath="PageType"
+                SelectionChanged="PagesList_SelectionChanged">
                 <ui:ListView.ItemsSource>
                     <local:ControlPagesData />
                 </ui:ListView.ItemsSource>
             </ui:ListView>
         </DockPanel>
-    </Grid>
 
+        <helpers:SampleFrame
+            x:Name="rootFrame"
+            Grid.Row="1"
+            Grid.Column="1"
+            Navigated="RootFrame_Navigated"
+            Navigating="RootFrame_Navigating" />
+    </Grid>
 </UserControl>

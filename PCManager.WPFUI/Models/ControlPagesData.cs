@@ -13,8 +13,8 @@ namespace PCManager.WPFUI
     {
         public ControlPagesData()
         {
+            this.AddPage(typeof(PCManagerInfoView), "PC Manager Info");
             this.AddPage(typeof(SliderPage), "Control Palette");
-            this.AddPage(typeof(WindowPage));
         }
 
         private void AddPage(Type pageType, string displayName = null)

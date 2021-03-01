@@ -2,12 +2,13 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net5.0-windows10.0.18362.0</TargetFramework>
+    <TargetFramework>net5.0-windows10.0.19041.0</TargetFramework>
     <UseWPF>true</UseWPF>
     <StartupObject></StartupObject>
     <Version>0.0.0.0</Version>
     <AssemblyVersion>0.0.0.0</AssemblyVersion>
     <FileVersion>0.0.0.0</FileVersion>
+    <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
     <ApplicationIcon>Assets\3byteSquareICO.ico</ApplicationIcon>
   </PropertyGroup>
 
@@ -15,14 +16,31 @@
     <ItemGroup>
     <PackageReference Include="ModernWpfUI" Version="0.9.3" />
     <PackageReference Include="JetBrains.Annotations" Version="2021.1.0-eap01" />
+    <PackageReference Include="OSVersionHelper" Version="1.1.24" />
+    <PackageReference Include="AppInsights.WindowsDesktop" Version="2.17.1" />
   </ItemGroup>
 
   
     <ItemGroup>
       <Folder Include="Common\" />
-      <Folder Include="ControlPages\" />
       <Folder Include="Converters\" />
-      <Folder Include="ThemeResources\" />
+    </ItemGroup>
+
+  
+    <ItemGroup>
+      <Compile Update="Properties\Settings.Designer.cs">
+        <DesignTimeSharedInput>True</DesignTimeSharedInput>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>Settings.settings</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
+  
+    <ItemGroup>
+      <None Update="Properties\Settings.settings">
+        <Generator>SettingsSingleFileGenerator</Generator>
+        <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+      </None>
     </ItemGroup>
 
 </Project>

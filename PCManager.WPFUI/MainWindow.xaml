@@ -12,6 +12,7 @@
     Width="500"
     Height="300"
     ui:ThemeManager.IsThemeAware="True"
+    ui:TitleBar.IsIconVisible="True"
     ui:WindowHelper.UseModernWindowStyle="True"
     Background="{DynamicResource SystemControlPageBackgroundAltHighBrush}"
     Foreground="{DynamicResource SystemControlPageTextBaseHighBrush}"
