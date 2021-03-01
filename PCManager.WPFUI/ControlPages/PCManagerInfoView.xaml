@@ -25,6 +25,8 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <TextBlock
                 Margin="5"
@@ -108,12 +110,12 @@
             </StackPanel>
 
 
-            
+
             <ScrollViewer
                 Grid.Row="1"
                 Grid.Column="1"
                 Width="300"
-                Height="600"
+                Height="450"
                 Margin="5,-10,0,0"
                 CanContentScroll="True"
                 VerticalScrollBarVisibility="Auto">
@@ -131,6 +133,27 @@
                     <TextBlock Text="Hello" />
                 </StackPanel>
             </ScrollViewer>
+            <StackPanel
+                Grid.Row="2"
+                Grid.Column="0"
+                Grid.ColumnSpan="2"
+                MinWidth="550">
+                <TextBlock Margin="5" Text="PC Manager App Log" />
+                <TextBox
+                        x:Name="PCManagerAppLogText"
+                        MinHeight="300"
+                        MaxHeight="400"
+                        MinWidth="550"
+                        Width="Auto"
+                        Margin="5,5,15,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        IsReadOnly="True"
+                        ScrollViewer.CanContentScroll="True"
+                        Text=""
+                        VerticalScrollBarVisibility="Visible" />
+
+            </StackPanel>
         </Grid>
     </Border>
 </Page>

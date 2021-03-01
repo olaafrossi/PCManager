@@ -5,7 +5,9 @@
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Reflection;
+using System.Text.Json;
 using System.Windows;
 using System.Windows.Data;
 
@@ -14,10 +16,15 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Events;
+using Serilog.Sinks.Observable;
 using ModernWpf.Controls;
 using PCManager.WPFUI.Helpers;
 using PCManager.WPFUI.Navigation;
 using PCManager.WPFUI.Properties;
+
+using Serilog.Core;
+
+using ThreeByteLibrary.Dotnet;
 
 namespace PCManager.WPFUI
 {
@@ -29,6 +36,7 @@ namespace PCManager.WPFUI
         public MainWindow()
         {
             InitializeComponent();
+            this.SetupApp();
 
             var rootFrame = NavigationRootPage.RootFrame;
             SetBinding(TitleBar.IsBackButtonVisibleProperty,
@@ -46,14 +54,15 @@ namespace PCManager.WPFUI
                 .ReadFrom.Configuration(builder.Build())
                 .Enrich.FromLogContext()
                 .WriteTo.Console()
-                .WriteTo.EventLog("ThreeByteCrestronNetworkMonitor",
-                    "Application", ".", false,
-                    "{Message}", restrictedToMinimumLevel: LogEventLevel.Verbose, eventIdProvider: null,
-                    formatProvider: null)
+                .WriteTo.File("log.txt")
+                //.WriteTo.EventLog("ThreeBytePCManager",
+                //    "Application", ".", false,
+                //    "{Message}", restrictedToMinimumLevel: LogEventLevel.Verbose, eventIdProvider: null,
+                //    formatProvider: null)
                 .CreateLogger();
 
             // write our first log message
-            WriteLine($"{DateTime.Now:HH:mm:ss.fff} | Application Starting");
+            Log.Logger.Information($"{DateTime.Now:HH:mm:ss.fff} | Application Starting");
 
             var host = Host.CreateDefaultBuilder()
                 .ConfigureServices((context, services) =>
@@ -72,6 +81,27 @@ namespace PCManager.WPFUI
                     $"appsettings.json.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json",
                     true)
                 .AddEnvironmentVariables();
+        }
+
+        private static void CreateLocalDirectoryForAppFiles()
+        {
+            AppSettings jsonSettings = new AppSettings();
+            string desiredFolder = Properties.Resources.LocalDataFolder;
+
+            //Ensure the directory exists
+            if (Directory.Exists(desiredFolder) is false)
+            {
+                Directory.CreateDirectory(desiredFolder);
+            }
+
+            string file = $"{desiredFolder}appsettings.json";
+            var options = new JsonSerializerOptions
+                              {
+                                  WriteIndented = true
+                              };
+
+            string jsonString = JsonSerializer.Serialize(jsonSettings, options);
+            File.WriteAllText(file, jsonString);
         }
 
         protected override void OnSourceInitialized(EventArgs e)

@@ -20,6 +20,8 @@ using OSVersionHelper;
 
 using PCManager.WPFUI.Models;
 
+using Serilog;
+
 namespace PCManager.WPFUI.Controllers
 {
     public class PCManagerInfoController
@@ -29,6 +31,9 @@ namespace PCManager.WPFUI.Controllers
         public async Task<IEnumerable<PCManagerAppInfoModel>> GetDataAsync()
         {
             output = new ObservableCollection<PCManagerAppInfoModel>();
+
+            Log.Logger.Information("dfdfd");
+            //PCManager.WPFUI.ControlPages.PCManagerInfoView.PCLogDataGrid.AddingNewItem("sd");
 
             PCManagerAppInfoModel appInfoModel = new PCManagerAppInfoModel();
 
