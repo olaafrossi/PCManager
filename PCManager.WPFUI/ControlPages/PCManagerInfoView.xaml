@@ -139,21 +139,28 @@
                 Grid.ColumnSpan="2"
                 MinWidth="550">
                 <TextBlock Margin="5" Text="PC Manager App Log" />
-                <TextBox
-                        x:Name="PCManagerAppLogText"
-                        MinHeight="300"
-                        MaxHeight="400"
-                        MinWidth="550"
-                        Width="Auto"
-                        Margin="5,5,15,0"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Top"
-                        IsReadOnly="True"
-                        ScrollViewer.CanContentScroll="True"
-                        Text=""
-                        VerticalScrollBarVisibility="Visible" />
+                <TextBlock
+                    x:Name="PCManagerAppLogText"
+                    Width="Auto"
+                    MinWidth="550"
+                    MinHeight="300"
+                    MaxHeight="400"
+                    Margin="5,5,15,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Text="{Binding FileText, Mode=TwoWay, NotifyOnSourceUpdated=True}"
+                    ScrollViewer.CanContentScroll="True" >
 
+                    </TextBlock>
+                <Button
+                    x:Name="AddToLog"
+                    MinWidth="75"
+                    MinHeight="40"
+                    Margin="10"
+                    Click="AddToLogOnClick"
+                    Style="{StaticResource AccentButtonStyle}" />
             </StackPanel>
+
         </Grid>
     </Border>
 </Page>

@@ -39,10 +39,15 @@ namespace PCManager.WPFUI
             this.SetupApp();
 
             var rootFrame = NavigationRootPage.RootFrame;
-            SetBinding(TitleBar.IsBackButtonVisibleProperty,
-                new Binding { Path = new PropertyPath(System.Windows.Controls.Frame.CanGoBackProperty), Source = rootFrame });
+            SetBinding(
+                TitleBar.IsBackButtonVisibleProperty,
+                new Binding
+                    {
+                        Path = new PropertyPath(System.Windows.Controls.Frame.CanGoBackProperty), 
+                        Source = rootFrame
+                    });
 
-            SubscribeToResourcesChanged();
+            this.SubscribeToResourcesChanged();
         }
 
         public void SetupApp()
@@ -60,9 +65,12 @@ namespace PCManager.WPFUI
                 //    "{Message}", restrictedToMinimumLevel: LogEventLevel.Verbose, eventIdProvider: null,
                 //    formatProvider: null)
                 .CreateLogger();
-
-            // write our first log message
+            
+            this.LogTest();
+            
             Log.Logger.Information($"{DateTime.Now:HH:mm:ss.fff} | Application Starting");
+            Log.Logger.ForContext<MainWindow>().Information("sds");
+            Log.Logger.Information("hello from some clas?");
 
             var host = Host.CreateDefaultBuilder()
                 .ConfigureServices((context, services) =>
@@ -71,6 +79,15 @@ namespace PCManager.WPFUI
                     })
                 .UseSerilog()
                 .Build();
+        }
+
+        public void LogTest()
+        {
+            int a = 1;
+            int b = 4;
+            Log.Logger.Error("i'm messing with ints {a} {b}", a,b);
+
+
         }
 
         static void BuildConfig(IConfigurationBuilder builder)
