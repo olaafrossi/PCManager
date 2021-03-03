@@ -2,92 +2,47 @@
 // Created: 2021 02 28
 // by Olaaf Rossi
 
+using System;
+
 using PCManager.WPFUI.Controllers;
 using Serilog;
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Windows;
+using System.Windows.Documents;
+using System.Windows.Media;
+using PCManager.DataAccess.Library;
 
 namespace PCManager.WPFUI.ControlPages
 {
     /// <summary>
     ///     Interaction logic for PCManagerInfoView.xaml
     /// </summary>
-    public partial class PCManagerInfoView : INotifyPropertyChanged
+    public partial class PCManagerInfoView
     {
         private readonly PCManagerInfoController viewModel = new();
 
-        private static string logFilePath = "log.txt";
-
-        private string _fileText;
-
-        //INotifyPropertyChanged members
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
 
         public PCManagerInfoView()
         {
-            DataContext = this;
             Loaded += OnLoaded;
             InitializeComponent();
-           
-        }
-
-        public string FileText
-        {
-            get
-            {
-                return _fileText;
-            }
-            set
-            {
-                _fileText = value;
-                OnPropertyChanged(FileText);
-            }
-        }
-
-        public void ReadFile(string path)
-        {
-            using (FileStream stream = File.Open(logFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            {
-                using (StreamReader reader = new StreamReader(stream))
-                {
-                    while (!reader.EndOfStream)
-                    {
-                        FileText = stream.ToString();
-                    }
-                }
-            }
-
-            //FileText = File.OpenRead(logFilePath).ToString();
-
-            OnPropertyChanged(FileText);
-            //WriteLine(FileText);
+            SQLiteCRUD sql = new SQLiteCRUD(MainWindow.GetConnectionString());
+            GetLogs(sql);
+            Log.Logger.Information("PCManager Info View Started");
         }
 
         private async void OnLoaded(object sender, RoutedEventArgs e)
         {
             Loaded -= OnLoaded;
             DataContext = await viewModel.GetDataAsync();
-            ReadFile(logFilePath);
         }
 
-        //public void WriteLine(string input)
-        //{
-        //    Dispatcher.Invoke(() =>
-        //        {
-        //            PCManagerAppLogText.AppendText($"{input} \n");
-        //            PCManagerAppLogText.ScrollToEnd();
-        //        });
-        //}
-
-        private void AddToLogOnClick(object sender, RoutedEventArgs e)
+        private void GetLogs(SQLiteCRUD sql)
         {
-            Log.Logger.Information("happy");
+            var rows = sql.GetAllLogs();
+            this.LogGrid.ItemsSource = rows;
         }
     }
 }

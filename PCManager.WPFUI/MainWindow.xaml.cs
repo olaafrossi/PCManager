@@ -55,15 +55,17 @@ namespace PCManager.WPFUI
             var builder = new ConfigurationBuilder();
             BuildConfig(builder);
 
+
+
             Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(builder.Build())
                 .Enrich.FromLogContext()
                 .WriteTo.Console()
                 .WriteTo.File("log.txt")
-                //.WriteTo.EventLog("ThreeBytePCManager",
-                //    "Application", ".", false,
-                //    "{Message}", restrictedToMinimumLevel: LogEventLevel.Verbose, eventIdProvider: null,
-                //    formatProvider: null)
+                .WriteTo.EventLog("ThreeBytePCManager",
+                    "Application", ".", false,
+                    "{Message}", restrictedToMinimumLevel: LogEventLevel.Verbose, eventIdProvider: null,
+                    formatProvider: null)
                 .CreateLogger();
             
             this.LogTest();
@@ -71,6 +73,7 @@ namespace PCManager.WPFUI
             Log.Logger.Information($"{DateTime.Now:HH:mm:ss.fff} | Application Starting");
             Log.Logger.ForContext<MainWindow>().Information("sds");
             Log.Logger.Information("hello from some clas?");
+
 
             var host = Host.CreateDefaultBuilder()
                 .ConfigureServices((context, services) =>
@@ -86,7 +89,6 @@ namespace PCManager.WPFUI
             int a = 1;
             int b = 4;
             Log.Logger.Error("i'm messing with ints {a} {b}", a,b);
-
 
         }
 
@@ -180,5 +182,19 @@ namespace PCManager.WPFUI
         private void OnResourcesChanged(object sender, EventArgs e)
         {
         }
+
+        public static string GetConnectionString(string connectionStringName = "Default")
+        {
+            string output = String.Empty;
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json");
+
+            var config = builder.Build();
+
+            output = config.GetConnectionString(connectionStringName);
+            return output;
+        }
+
     }
 }

@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -31,10 +32,9 @@ namespace PCManager.WPFUI.Controllers
         public async Task<IEnumerable<PCManagerAppInfoModel>> GetDataAsync()
         {
             output = new ObservableCollection<PCManagerAppInfoModel>();
-
+            
             Log.Logger.Information("dfdfd");
-            //PCManager.WPFUI.ControlPages.PCManagerInfoView.PCLogDataGrid.AddingNewItem("sd");
-
+            
             PCManagerAppInfoModel appInfoModel = new PCManagerAppInfoModel();
 
             output.Add(
@@ -53,6 +53,7 @@ namespace PCManager.WPFUI.Controllers
                     });
             return output;
         }
+
 
         public Version GetMsixPackageVersion()
         {

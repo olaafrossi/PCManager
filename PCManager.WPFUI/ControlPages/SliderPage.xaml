@@ -7,6 +7,14 @@
     xmlns:ui="http://schemas.modernwpf.com/2019"
     mc:Ignorable="d">
 
+    <Page.Resources>
+        <Style TargetType="Slider" BasedOn="{StaticResource DefaultSliderStyle}">
+            <Setter Property="Maximum" Value="100" />
+            <Setter Property="TickFrequency" Value="1" />
+            <Setter Property="IsSnapToTickEnabled" Value="True" />
+            <Setter Property="AutoToolTipPlacement" Value="TopLeft" />
+        </Style>
+    </Page.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -19,8 +27,6 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <TextBlock Grid.Row="0" Text="Hello" />
-        <TextBlock Grid.Row="1" Text="Hello" />
-        <TextBlock Grid.Row="2" Text="Hello" />
 
     </Grid>
 
