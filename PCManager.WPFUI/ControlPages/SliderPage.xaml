@@ -8,7 +8,7 @@
     mc:Ignorable="d">
 
     <Page.Resources>
-        <Style TargetType="Slider" BasedOn="{StaticResource DefaultSliderStyle}">
+        <Style BasedOn="{StaticResource DefaultSliderStyle}" TargetType="Slider">
             <Setter Property="Maximum" Value="100" />
             <Setter Property="TickFrequency" Value="1" />
             <Setter Property="IsSnapToTickEnabled" Value="True" />

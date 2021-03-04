@@ -19,6 +19,8 @@ using Windows.Foundation.Metadata;
 
 using OSVersionHelper;
 
+using PCManager.DataAccess.Library;
+using PCManager.DataAccess.Library.Models;
 using PCManager.WPFUI.Models;
 
 using Serilog;
@@ -29,13 +31,10 @@ namespace PCManager.WPFUI.Controllers
     {
         private static ObservableCollection<PCManagerAppInfoModel> output;
 
-        public async Task<IEnumerable<PCManagerAppInfoModel>> GetDataAsync()
+        public async Task<IEnumerable<PCManagerAppInfoModel>> GetAppDataAsync()
         {
             output = new ObservableCollection<PCManagerAppInfoModel>();
-            
             Log.Logger.Information("dfdfd");
-            
-            PCManagerAppInfoModel appInfoModel = new PCManagerAppInfoModel();
 
             output.Add(
                 new PCManagerAppInfoModel
@@ -54,11 +53,10 @@ namespace PCManager.WPFUI.Controllers
             return output;
         }
 
-
         public Version GetMsixPackageVersion()
         {
             var assembly = Assembly.GetExecutingAssembly();
-            var manifestPath = assembly.Location.Replace(assembly.ManifestModule.Name, "") + @"..\AppxManifest.xml";
+            var manifestPath = assembly.Location.Replace(assembly.ManifestModule.Name, String.Empty) + @"..\AppxManifest.xml";
             if (File.Exists(manifestPath))
             {
                 var xDoc = XDocument.Load(manifestPath);

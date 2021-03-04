@@ -9,25 +9,25 @@ namespace PCManager.DataAccess.Library
 {
     public class SQLiteCRUD
     {
-        private readonly string _connectionString;
+        private readonly string connectionString;
 
         private SQLiteDataAccess db = new SQLiteDataAccess();
+
+        public SQLiteCRUD(string connString)
+        {
+            this.connectionString = connString;
+        }
 
         public IList<LogModel> GetAllLogs()
         {
             string sql = "Select iD, Timestamp, Level, Exception, RenderedMessage, Properties from Logs";
-            return this.db.LoadData<LogModel, dynamic>(sql, new { }, _connectionString);
+            return this.db.LoadData<LogModel, dynamic>(sql, new { }, this.connectionString);
         }
 
         public IList<LogModel> GetSomeLogs(int logCount)
         {
             string sql = $"SELECT * FROM Logs ORDER BY iD DESC LIMIT {logCount}";
-            return this.db.LoadData<LogModel, dynamic>(sql, new { }, _connectionString);
-        }
-
-        public SQLiteCRUD(string connectionString)
-        {
-            _connectionString = connectionString;
+            return this.db.LoadData<LogModel, dynamic>(sql, new { }, this.connectionString);
         }
     }
 }

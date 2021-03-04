@@ -141,28 +141,37 @@
                     MaxHeight="400"
                     Margin="5"
                     AutoGenerateColumns="True"
+                    BorderBrush="Gray"
+                    BorderThickness="1"
                     CanUserAddRows="False"
                     CanUserDeleteRows="False"
+                    EnableColumnVirtualization="True"
+                    EnableRowVirtualization="True"
+                    GridLinesVisibility="Horizontal"
+                    HeadersVisibility="Column"
+                    HorizontalScrollBarVisibility="Auto"
                     IsReadOnly="True"
+                    RowDetailsVisibilityMode="Visible"
                     SnapsToDevicePixels="True"
                     UseLayoutRounding="True"
-                    RowDetailsVisibilityMode="Visible"
-                    GridLinesVisibility="Horizontal"
-                    EnableColumnVirtualization ="True"
-                    EnableRowVirtualization ="True"
-                    VirtualizingPanel.VirtualizationMode="Standard"
-                    VirtualizingPanel.IsVirtualizingWhenGrouping="True"
-                    HorizontalScrollBarVisibility="Auto"
                     VerticalScrollBarVisibility="Visible"
-                    BorderThickness="1"
-                    BorderBrush="Gray"
-                    HeadersVisibility="Column" />
+                    VirtualizingPanel.IsVirtualizingWhenGrouping="True"
+                    VirtualizingPanel.VirtualizationMode="Standard">
+                    <DataGrid.CellStyle>
+                        <Style TargetType="DataGridCell" >
+                        <Style.Triggers>
+                            <Trigger Property="Content" Value="Error">
+                                <Setter Property="Foreground" Value="Red"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.CellStyle> 
+                </DataGrid>
                 <Button
                     x:Name="AddToLog"
                     MinWidth="75"
                     MinHeight="40"
                     Margin="10"
-                    
                     Content="Add a log message"
                     Style="{StaticResource AccentButtonStyle}" />
             </StackPanel>
