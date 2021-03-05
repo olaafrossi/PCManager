@@ -8,11 +8,12 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{ACD4D007-6D48-46C5-AD97-23EA1FB9FA81}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		PCManager.WPFUI\Properties\GlobalSuppressions.cs = PCManager.WPFUI\Properties\GlobalSuppressions.cs
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ThreeByteLibrary.Dotnet", "..\ThreeByteLibrary\ThreeByteLibrary.Dotnet\ThreeByteLibrary.Dotnet.csproj", "{D58EDA53-BC8E-45C6-8B9E-5C87079DD92A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PCManager.DataAccess.Library", "PCManager.DataAccess.Library\PCManager.DataAccess.Library.csproj", "{E87D6CAA-4944-4AB4-B686-79771BE6361A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PCManager.DataAccess.Library", "PCManager.DataAccess.Library\PCManager.DataAccess.Library.csproj", "{E87D6CAA-4944-4AB4-B686-79771BE6361A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
