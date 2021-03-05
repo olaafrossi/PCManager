@@ -39,7 +39,7 @@ namespace PCManager.WPFUI.ControlPages
         {
             SQLiteCRUD sql = new SQLiteCRUD(GetConnectionString());
             Log.Logger.Information("The Log Data Method");
-            var rows = sql.GetSomeLogs(20);
+            var rows = sql.GetSomeLogs(40);
             this.Dispatcher.Invoke(() => { this.LogGrid.ItemsSource = rows; });
         }
 
@@ -48,6 +48,12 @@ namespace PCManager.WPFUI.ControlPages
             this.Loaded -= this.OnLoaded;
             this.DataContext = await this.viewModel.GetAppDataAsync().ConfigureAwait(true);
             await Task.Run(this.GetDataLogs).ConfigureAwait(true);
+        }
+
+        private void RefreshLogButtonOnClick(object sender, RoutedEventArgs e)
+        {
+            Log.Logger.Information("CLicked the Refresh Button");
+            GetDataLogs();
         }
     }
 }
