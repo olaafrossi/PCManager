@@ -48,7 +48,7 @@ namespace PCManager.WPFUI.Controllers
                         AppInstallerUri = GetAppInstallerUri(),
                         PackageChannel = GetPackageChannel(),
                         DisplayName = GetDisplayName(),
-                        MSIXVersionNumber = $"MSIX Version # {this.GetMsixPackageVersion().ToString()}"
+                        MSIXVersionNumber = $"MSIX Version # {this.GetMsixPackageVersion()}"
                     });
             return output;
         }

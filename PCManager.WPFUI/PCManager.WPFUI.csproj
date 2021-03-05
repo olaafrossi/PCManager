@@ -49,6 +49,7 @@
     <ItemGroup>
       <Folder Include="Common\" />
       <Folder Include="Converters\" />
+      <Folder Include="Presets\" />
     </ItemGroup>
 
   
