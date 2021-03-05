@@ -11,12 +11,14 @@ using System.Text.Json;
 using System.Windows;
 using System.Windows.Data;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ModernWpf.Controls;
 using PCManager.WPFUI.Helpers;
-using PCManager.WPFUI.Navigation;
 using PCManager.WPFUI.Properties;
 using Serilog;
+
+using ThreeByteLibrary.Dotnet;
 
 using Frame = System.Windows.Controls.Frame;
 
@@ -60,8 +62,12 @@ namespace PCManager.WPFUI
             var host = Host.CreateDefaultBuilder().ConfigureServices(
                 (context, services) =>
                     {
-                        //services.AddTransient<IPcNetworkListener, PcNetworkListener>();
+                        services.AddTransient<IPcNetworkListener, PcNetworkListener>();
                     }).UseSerilog().Build();
+
+            // launch the class
+            var svcPcNetworkListener = ActivatorUtilities.CreateInstance<PcNetworkListener>(host.Services);
+            svcPcNetworkListener.Run();
         }
 
         protected override void OnClosing(CancelEventArgs e)

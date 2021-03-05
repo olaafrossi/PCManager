@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using PCManager.DataAccess.Library.Models;
+
 namespace PCManager.WPFUI.Models
 {
     public class PCManagerAppInfoModel

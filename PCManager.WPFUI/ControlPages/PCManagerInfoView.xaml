@@ -158,14 +158,14 @@
                     VirtualizingPanel.IsVirtualizingWhenGrouping="True"
                     VirtualizingPanel.VirtualizationMode="Standard">
                     <DataGrid.CellStyle>
-                        <Style TargetType="DataGridCell" >
-                        <Style.Triggers>
-                            <Trigger Property="Content" Value="Error">
-                                <Setter Property="Foreground" Value="Red"/>
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </DataGrid.CellStyle> 
+                        <Style TargetType="DataGridCell">
+                            <Style.Triggers>
+                                <Trigger Property="Content" Value="Error">
+                                    <Setter Property="Foreground" Value="Red" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGrid.CellStyle>
                 </DataGrid>
                 <Button
                     x:Name="AddToLog"

@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace PCManager.WPFUI.ControlPages
 {
     /// <summary>
-    /// Interaction logic for ProcessMonitorView.xaml
+    /// Interaction logic for PCNetworkListenerView.xaml
     /// </summary>
-    public partial class ProcessMonitorView
+    public partial class PCNetworkListenerView : Page
     {
-        public ProcessMonitorView()
+        public PCNetworkListenerView()
         {
             InitializeComponent();
         }

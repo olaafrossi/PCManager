@@ -16,6 +16,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 
+using Windows.Devices.Geolocation.Geofencing;
+
 using ModernWpf;
 using ModernWpf.Controls;
 
@@ -25,7 +27,7 @@ using PCManager.WPFUI.Helpers;
 
 using Frame = ModernWpf.Controls.Frame;
 
-namespace PCManager.WPFUI.Navigation
+namespace PCManager.WPFUI
 {
     /// <summary>
     /// Interaction logic for NavigationRootPage.xaml
@@ -367,11 +369,13 @@ namespace PCManager.WPFUI.Navigation
         {
             public ControlPagesData()
             {
-                AddPage(typeof(SliderPage));
-                AddPage(typeof(WindowPage), "test");
-            }
+            this.AddPage(typeof(PCManagerInfoView), "PC Manager Info");
+            this.AddPage(typeof(SliderPage), "Slider Page for testing");
+            this.AddPage(typeof(ProcessMonitorView), "Monitored Application");
+            this.AddPage(typeof(PCNetworkListenerView), "PC Network Monitor");
+        }
 
-            private void AddPage(Type pageType, string displayName = null)
+        private void AddPage(Type pageType, string displayName = null)
             {
                 Add(new ControlInfoDataItem(pageType, displayName));
             }

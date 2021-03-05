@@ -9,9 +9,22 @@
     Title="ProcessMonitorView"
     d:DesignHeight="450"
     d:DesignWidth="800"
-    mc:Ignorable="d" ShowsNavigationUI="True">
+    ShowsNavigationUI="True"
+    mc:Ignorable="d">
 
     <Grid>
         <Label Content="sdsds" />
+        <Border />
+        <Canvas />
+        <Button />
+        <PasswordBox />
+        <TabControl>
+            <TabItem>
+                <Grid Background="#FFE5E5E5" />
+            </TabItem>
+            <TabItem>
+                <Grid Background="#FFE5E5E5" />
+            </TabItem>
+        </TabControl>
     </Grid>
 </ui:Page>
