@@ -17,7 +17,7 @@
             x:Name="LayoutRoot"
             MinWidth="500"
             MinHeight="500"
-            Margin="{DynamicResource ControlPageContentMargin}">
+            Margin="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
@@ -26,21 +26,32 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" MaxHeight="450" />
-                <RowDefinition Height="Auto" MaxHeight="650" />
-                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <GridSplitter
                 Grid.Row="2"
                 Grid.Column="1"
-                MinWidth="50"
-                MinHeight="10"
+                MinWidth="700"
+                MinHeight="12"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Top"
                 HorizontalContentAlignment="Center"
                 Background="#FFDEA504"
                 Foreground="#FFDEA504"
                 ResizeDirection="Rows" />
-            
+            <Label
+                Grid.Row="2"
+                Grid.Column="1"
+                Height="13"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Top"
+                Content="--------------------------------------------------------------"
+                FontSize="12"
+                FontWeight="Bold"
+                Foreground="White"
+                IsHitTestVisible="False" />
+
             <TextBlock
                 Margin="5"
                 FontSize="24"
@@ -134,28 +145,28 @@
                     Focusable="True"
                     ScrollViewer.CanContentScroll="True"
                     SnapsToDevicePixels="True"
-                    Text="Assemby Version" />
+                    Text="Assembly Version" />
                 <TextBlock
                     MinHeight="32"
                     Margin="5"
                     Focusable="True"
                     ScrollViewer.CanContentScroll="True"
                     SnapsToDevicePixels="True"
-                    Text="Assemby File Version" />
+                    Text="Assembly File Version" />
                 <TextBlock
                     MinHeight="32"
                     Margin="5"
                     Focusable="True"
                     ScrollViewer.CanContentScroll="True"
                     SnapsToDevicePixels="True"
-                    Text="Assemby Information Version" />
+                    Text="Assembly Information Version" />
                 <TextBlock
                     MinHeight="32"
                     Margin="5"
                     Focusable="True"
                     ScrollViewer.CanContentScroll="True"
                     SnapsToDevicePixels="True"
-                    Text="Dot Net Info" />
+                    Text=".NET Info" />
                 <TextBlock
                     MinHeight="32"
                     Margin="5"
@@ -169,7 +180,7 @@
                     Focusable="True"
                     ScrollViewer.CanContentScroll="True"
                     SnapsToDevicePixels="True"
-                    Text="MSIX Package Version" />
+                    Text="MSIX Package Version (MSIX only)" />
                 <TextBlock
                     MinHeight="32"
                     Margin="5"
@@ -198,86 +209,208 @@
                     ScrollViewer.CanContentScroll="True"
                     SnapsToDevicePixels="True"
                     Text="MSIX Version Number (MSIX Only)" />
-                
             </StackPanel>
-        
-            <ScrollViewer
+
+            <ui:SimpleStackPanel
                 Grid.Row="1"
                 Grid.Column="2"
-                Width="300"
-                Height="450"
-                Margin="5,-10,0,0"
-                CanContentScroll="True"
-                VerticalScrollBarVisibility="Auto">
-                <StackPanel Margin="16" Background="{DynamicResource SystemControlForegroundChromeGrayBrush}">
-                    <TextBlock Text="Hello" />
-                    <TextBlock Text="Hello" />
-                    <TextBlock Text="Hello" />
-                    <TextBlock Text="Hello" />
-                    <TextBlock Text="Hello" />
-                    <TextBlock Text="Hello" />
-                    <TextBlock Text="Hello" />
-                    <TextBlock Text="Hello" />
-                    <TextBlock Text="Hello" />
-                    <TextBlock Text="Hello" />
-                    <TextBlock Text="Hello" />
-                </StackPanel>
-            </ScrollViewer>
-                
-            <StackPanel
-                Grid.Row="2"
-                Grid.Column="0"
-                Grid.ColumnSpan="3"
-                MinWidth="500">
+                Width="250"
+                Height="410"
+                Margin="5,5,5,5"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Background="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}">
+
+                <TextBlock Margin="5,5,5,5" Text="PC Manager Options" />
+                <Button
+                    x:Name="CheckForUpdate"
+                    MinWidth="165"
+                    MinHeight="40"
+                    Margin="5,10,5,5"
+                    HorizontalAlignment="Left"
+                    Click="CheckForUpdateOnClick"
+                    Content="Check for Update (MSIX)"
+                    Style="{StaticResource AccentButtonStyle}" />
+                <TextBlock Margin="5" FontSize="14">
+                    <Hyperlink
+                        x:Name="LinkTo3Byte"
+                        NavigateUri="https://www.3-byte.com"
+                        RequestNavigate="LinkTo3ByteOnRequestNavigate">
+                        Three Byte Intermedia
+                    </Hyperlink>
+                </TextBlock>
+                <TextBlock Margin="5" FontSize="14">
+                    <Hyperlink
+                        x:Name="LinkToGitHubProject"
+                        NavigateUri="https://www.3-byte.com"
+                        RequestNavigate="LinkToGitHubProjectOnRequestNavigate">
+                        GitHub Project (Code)
+                    </Hyperlink>
+                </TextBlock>
+                <TextBlock Margin="5" FontSize="14">
+                    <Hyperlink
+                        x:Name="LinkToProjectInstaller"
+                        NavigateUri="https://www.3-byte.com"
+                        RequestNavigate="LinkToProjectInstallerOnRequestNavigate">
+                        Project Installer URL
+                    </Hyperlink>
+                </TextBlock>
                 <TextBlock
                     Margin="5"
-                    FontSize="24"
-                    FontWeight="Normal"
-                    Foreground="#FFDEA504"
-                    Text="PC Manager Log" />
-                    
-                <DataGrid
-                    x:Name="LogGrid"
-                    MinWidth="400"
-                    MinHeight="200"
-                    MaxHeight="1000"
-                    Margin="5"
-                    AutoGenerateColumns="True"
-                    BorderBrush="Gray"
-                    BorderThickness="1"
-                    CanUserAddRows="False"
-                    CanUserDeleteRows="False"
-                    EnableColumnVirtualization="True"
-                    EnableRowVirtualization="True"
-                    GridLinesVisibility="Horizontal"
-                    HeadersVisibility="Column"
+                    FontSize="14"
+                    Text="Location of Application Config File" />
+                <TextBox
+                    Margin="5,5,5,5"
+                    VerticalAlignment="Stretch"
+                    VerticalContentAlignment="Center"
+                    Focusable="True"
+                    FontSize="8"
                     HorizontalScrollBarVisibility="Auto"
                     IsReadOnly="True"
-                    RowDetailsVisibilityMode="Visible"
+                    ScrollViewer.CanContentScroll="True"
                     SnapsToDevicePixels="True"
-                    UseLayoutRounding="True"
-                    VerticalScrollBarVisibility="Visible"
-                    VirtualizingPanel.IsVirtualizingWhenGrouping="True"
-                    VirtualizingPanel.VirtualizationMode="Standard">
-                    <DataGrid.CellStyle>
-                        <Style TargetType="{x:Type DataGridCell}">
-                            <Style.Triggers>
-                                <Trigger Property="Content" Value="Error">
-                                    <Setter Property="Foreground" Value="Red" />
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </DataGrid.CellStyle>
-                </DataGrid>
+                    Text="C:\ThreeByteIntermedia\PCManager\Settings\appsettings.json" />
+
+            </ui:SimpleStackPanel>
+
+            <ui:SimpleStackPanel
+                Grid.Row="3"
+                Grid.Column="2"
+                Width="250"
+                Height="700"
+                Margin="5,5,5,5"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Background="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}">
+
+                <TextBlock Margin="5,5,5,5" Text="Log Grid Options" />
                 <Button
                     x:Name="RefreshLog"
-                    MinWidth="200"
+                    MinWidth="165"
                     MinHeight="40"
-                    Margin="5"
+                    Margin="5,10,5,5"
+                    HorizontalAlignment="Left"
                     Click="RefreshLogButtonOnClick"
                     Content="Refresh Log"
                     Style="{StaticResource AccentButtonStyle}" />
-            </StackPanel>
+                <TextBlock
+                    x:Name="LoadTimeTextBlock"
+                    Margin="5,10,5,5"
+                    Text="Hello" />
+                <ComboBox
+                    x:Name="LogSelectComboBox"
+                    MinWidth="165"
+                    Margin="5,10,5,5"
+                    ui:ControlHelper.Header="Number of Logs to Fetch"
+                    SelectedIndex="0">
+                    <ComboBoxItem>20</ComboBoxItem>
+                    <ComboBoxItem>50</ComboBoxItem>
+                    <ComboBoxItem>100</ComboBoxItem>
+                    <ComboBoxItem>200</ComboBoxItem>
+                </ComboBox>
+                <ComboBox
+                    MinWidth="165"
+                    Margin="5,10,5,5"
+                    ui:ControlHelper.Header="GridLinesVisibility"
+                    ItemsSource="{Binding Source={x:Type DataGridGridLinesVisibility}, Converter={StaticResource EnumValuesConverter}}"
+                    SelectedItem="{Binding ElementName=LogGrid, Path=GridLinesVisibility}" />
+                <ComboBox
+                    MinWidth="165"
+                    Margin="5,10,5,5"
+                    ui:ControlHelper.Header="ClipboardCopyMode"
+                    ItemsSource="{Binding Source={x:Type DataGridClipboardCopyMode}, Converter={StaticResource EnumValuesConverter}}"
+                    SelectedItem="{Binding ElementName=LogGrid, Path=ClipboardCopyMode}" />
+                <ComboBox
+                    MinWidth="165"
+                    Margin="5,10,5,5"
+                    ui:ControlHelper.Header="SelectionUnit"
+                    ItemsSource="{Binding Source={x:Type DataGridSelectionUnit}, Converter={StaticResource EnumValuesConverter}}"
+                    SelectedItem="{Binding ElementName=LogGrid, Path=SelectionUnit}" />
+                <ComboBox
+                    MinWidth="165"
+                    Margin="5,10,5,5"
+                    ui:ControlHelper.Header="SelectionMode"
+                    ItemsSource="{Binding Source={x:Type DataGridSelectionMode}, Converter={StaticResource EnumValuesConverter}}"
+                    SelectedItem="{Binding ElementName=LogGrid, Path=SelectionMode}" />
+                <TextBlock
+                    Margin="5"
+                    FontSize="14"
+                    Text="Location of SQLite Log DB" />
+                <TextBox
+                    Margin="5,5,5,5"
+                    VerticalAlignment="Stretch"
+                    VerticalContentAlignment="Center"
+                    Focusable="True"
+                    FontSize="9"
+                    HorizontalScrollBarVisibility="Auto"
+                    IsReadOnly="True"
+                    ScrollViewer.CanContentScroll="True"
+                    SnapsToDevicePixels="True"
+                    Text="C:\ThreeByteIntermedia\PCManager\Logs\Log.db" />
+                <TextBlock
+                    Margin="5"
+                    FontSize="14"
+                    Text="Location of JSON formatted Logs" />
+                <TextBox
+                    Margin="5,5,5,5"
+                    VerticalAlignment="Stretch"
+                    VerticalContentAlignment="Center"
+                    Focusable="True"
+                    FontSize="9"
+                    HorizontalScrollBarVisibility="Auto"
+                    IsReadOnly="True"
+                    ScrollViewer.CanContentScroll="True"
+                    SnapsToDevicePixels="True"
+                    Text="C:\ThreeByteIntermedia\PCManager\Logs\Log.json" />
+
+            </ui:SimpleStackPanel>
+
+
+            <TextBlock
+                Grid.Row="2"
+                Grid.Column="0"
+                Margin="5"
+                FontSize="24"
+                FontWeight="Normal"
+                Foreground="#FFDEA504"
+                Text="PC Manager Log" />
+
+            <DataGrid
+                x:Name="LogGrid"
+                Grid.Row="3"
+                Grid.Column="0"
+                Grid.ColumnSpan="2"
+                MinWidth="400"
+                MinHeight="100"
+                MaxHeight="700"
+                Margin="5"
+                AutoGenerateColumns="True"
+                BorderBrush="Gray"
+                BorderThickness="1"
+                CanUserAddRows="False"
+                CanUserDeleteRows="False"
+                EnableColumnVirtualization="True"
+                EnableRowVirtualization="True"
+                GridLinesVisibility="Horizontal"
+                HeadersVisibility="Column"
+                HorizontalScrollBarVisibility="Auto"
+                IsReadOnly="True"
+                RowDetailsVisibilityMode="Visible"
+                SnapsToDevicePixels="True"
+                UseLayoutRounding="True"
+                VerticalScrollBarVisibility="Visible"
+                VirtualizingPanel.IsVirtualizingWhenGrouping="True"
+                VirtualizingPanel.VirtualizationMode="Standard">
+                <DataGrid.CellStyle>
+                    <Style TargetType="{x:Type DataGridCell}">
+                        <Style.Triggers>
+                            <Trigger Property="Content" Value="Error">
+                                <Setter Property="Foreground" Value="Red" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.CellStyle>
+            </DataGrid>
 
         </Grid>
     </Border>
