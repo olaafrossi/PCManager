@@ -12,13 +12,14 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ThreeByteLibrary.Dotnet;
 
 namespace PCManager.WPFUI.ControlPages
 {
     /// <summary>
     /// Interaction logic for PCNetworkListenerView.xaml
     /// </summary>
-    public partial class PCNetworkListenerView : Page
+    public partial class PCNetworkListenerView
     {
         public PCNetworkListenerView()
         {

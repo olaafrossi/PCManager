@@ -28,7 +28,7 @@
             <common:BooleanToValueConverter x:Key="booleanToValueConverter" />
             <common:CornerRadiusToDoubleConverter x:Key="CornerRadiusToDoubleConverter" />
 
-           
+
         </ResourceDictionary>
     </Application.Resources>
 </Application>
