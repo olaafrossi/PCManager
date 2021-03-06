@@ -1,14 +1,19 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows.Data;
+using System.Windows.Media;
 
-namespace PCManager.WPFUI.Converters
+namespace PCManager.WPFUI.Common
 {
-    public class EnumValuesConverter : IValueConverter
+    public class ColorToBrushConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return Enum.GetValues((Type)value);
+            if (value is Color color)
+            {
+                return new SolidColorBrush(color);
+            }
+            return null;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

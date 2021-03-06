@@ -2,18 +2,33 @@
     x:Class="PCManager.WPFUI.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:converters="clr-namespace:PCManager.WPFUI.Converters;assembly=PCManager.WPFUI"
+    xmlns:common="clr-namespace:PCManager.WPFUI.Common"
     xmlns:local="clr-namespace:PCManager.WPFUI"
+    xmlns:presets="clr-namespace:PCManager.WPFUI.Presets"
     xmlns:sc="clr-namespace:PCManager.WPFUI;assembly=PCManager.WPFUI"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
     xmlns:ui="http://schemas.modernwpf.com/2019"
     StartupUri="MainWindow.xaml">
+
 
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ui:ThemeResources RequestedTheme="Dark" />
+
+                <ui:ThemeResources />
                 <ui:XamlControlsResources />
+
             </ResourceDictionary.MergedDictionaries>
+
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <common:EnumValuesConverter x:Key="EnumValuesConverter" />
+            <common:ColorToBrushConverter x:Key="ColorToBrushConverter" />
+            <common:BrushToColorConverter x:Key="BrushToColorConverter" />
+            <common:InverseAppThemeConverter x:Key="InverseAppThemeConverter" />
+            <common:BooleanToValueConverter x:Key="booleanToValueConverter" />
+            <common:CornerRadiusToDoubleConverter x:Key="CornerRadiusToDoubleConverter" />
+
+
         </ResourceDictionary>
     </Application.Resources>
 </Application>

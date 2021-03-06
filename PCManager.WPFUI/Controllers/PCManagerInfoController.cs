@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -18,6 +19,8 @@ using Windows.Foundation.Metadata;
 
 using OSVersionHelper;
 
+using PCManager.DataAccess.Library;
+using PCManager.DataAccess.Library.Models;
 using PCManager.WPFUI.Models;
 
 using Serilog;
@@ -28,14 +31,10 @@ namespace PCManager.WPFUI.Controllers
     {
         private static ObservableCollection<PCManagerAppInfoModel> output;
 
-        public async Task<IEnumerable<PCManagerAppInfoModel>> GetDataAsync()
+        public async Task<IEnumerable<PCManagerAppInfoModel>> GetAppDataAsync()
         {
             output = new ObservableCollection<PCManagerAppInfoModel>();
-
             Log.Logger.Information("dfdfd");
-            //PCManager.WPFUI.ControlPages.PCManagerInfoView.PCLogDataGrid.AddingNewItem("sd");
-
-            PCManagerAppInfoModel appInfoModel = new PCManagerAppInfoModel();
 
             output.Add(
                 new PCManagerAppInfoModel
@@ -49,7 +48,7 @@ namespace PCManager.WPFUI.Controllers
                         AppInstallerUri = GetAppInstallerUri(),
                         PackageChannel = GetPackageChannel(),
                         DisplayName = GetDisplayName(),
-                        MSIXVersionNumber = $"MSIX Version # {this.GetMsixPackageVersion().ToString()}"
+                        MSIXVersionNumber = $"MSIX Version # {this.GetMsixPackageVersion()}"
                     });
             return output;
         }
@@ -57,7 +56,7 @@ namespace PCManager.WPFUI.Controllers
         public Version GetMsixPackageVersion()
         {
             var assembly = Assembly.GetExecutingAssembly();
-            var manifestPath = assembly.Location.Replace(assembly.ManifestModule.Name, "") + @"..\AppxManifest.xml";
+            var manifestPath = assembly.Location.Replace(assembly.ManifestModule.Name, String.Empty) + @"..\AppxManifest.xml";
             if (File.Exists(manifestPath))
             {
                 var xDoc = XDocument.Load(manifestPath);

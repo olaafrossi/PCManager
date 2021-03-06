@@ -1,38 +1,86 @@
-﻿using System;
+﻿// Created by Three Byte Intemedia, Inc. | project: PCManager |
+// Created: 2021 02 27
+// by Olaaf Rossi
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
+using PCManager.WPFUI.Presets;
 
 using ModernWpf;
 using ModernWpf.Controls;
 
 using PCManager.WPFUI.Common;
 using PCManager.WPFUI.ControlPages;
-using PCManager.WPFUI.Helpers;
 
 using Frame = ModernWpf.Controls.Frame;
 
-namespace PCManager.WPFUI.Navigation
+namespace PCManager.WPFUI
 {
     /// <summary>
-    /// Interaction logic for NavigationRootPage.xaml
+    ///     Interaction logic for NavigationRootPage.xaml
     /// </summary>
     public partial class NavigationRootPage
     {
         private const string AutoHideScrollBarsKey = "AutoHideScrollBars";
+
+        private static readonly ThreadLocal<NavigationRootPage> _current = new();
+
+        private static readonly ThreadLocal<Frame> _rootFrame = new();
+
+        private readonly ControlPagesData _controlPagesData = new();
+
+        private bool _ignoreSelectionChange;
+
+        private Type _startPage;
+
+        public NavigationRootPage()
+        {
+            this.InitializeComponent();
+
+            if (App.IsMultiThreaded)
+            {
+                //PresetsMenu.Visibility = Visibility.Collapsed;
+                this.NewWindowMenuItem.Visibility = Visibility.Visible;
+            }
+
+            Loaded += delegate
+                {
+                    PCManager.WPFUI.Presets.PresetManager.Current.ColorPresetChanged += OnColorPresetChanged;
+
+                    //controlsSearchBox.Focus();
+                };
+
+            Unloaded += delegate
+                {
+                    PresetManager.Current.ColorPresetChanged -= OnColorPresetChanged;
+                };
+
+            OnColorPresetChanged(null, null);
+
+            Current = this;
+            RootFrame = this.rootFrame;
+
+            this.SetStartPage();
+            if (this._startPage != null)
+            {
+                this.PagesList.SelectedItem = this.PagesList.Items.OfType<ControlInfoDataItem>()
+                    .FirstOrDefault(x => x.PageType == this._startPage);
+            }
+
+            this.NavigateToSelectedPage();
+
+            if (Debugger.IsAttached)
+            {
+                this.DebugMenuItem.Visibility = Visibility.Visible;
+            }
+        }
 
         public static NavigationRootPage Current
         {
@@ -46,59 +94,20 @@ namespace PCManager.WPFUI.Navigation
             private set => _rootFrame.Value = value;
         }
 
-        private static readonly ThreadLocal<NavigationRootPage> _current = new ThreadLocal<NavigationRootPage>();
-
-        private static readonly ThreadLocal<Frame> _rootFrame = new ThreadLocal<Frame>();
-
-        private bool _ignoreSelectionChange;
-
-        private readonly ControlPagesData _controlPagesData = new ControlPagesData();
-
-        private Type _startPage;
-
-        public NavigationRootPage()
+        private void AutoHideScrollBarsAuto_Checked(object sender, RoutedEventArgs e)
         {
-            InitializeComponent();
-
-            if (App.IsMultiThreaded)
-            {
-                //PresetsMenu.Visibility = Visibility.Collapsed;
-                NewWindowMenuItem.Visibility = Visibility.Visible;
-            }
-
-            //Loaded += delegate
-            //    {
-            //        PresetManager.Current.ColorPresetChanged += OnColorPresetChanged;
-
-            //        controlsSearchBox.Focus();
-            //    };
-
-            //Unloaded += delegate
-            //    {
-            //        PresetManager.Current.ColorPresetChanged -= OnColorPresetChanged;
-            //    };
-
-            //OnColorPresetChanged(null, null);
-
-            Current = this;
-            RootFrame = rootFrame;
-
-            SetStartPage();
-            if (_startPage != null)
-            {
-                PagesList.SelectedItem = PagesList.Items.OfType<ControlInfoDataItem>()
-                    .FirstOrDefault(x => x.PageType == _startPage);
-            }
-
-            NavigateToSelectedPage();
-
-            if (Debugger.IsAttached)
-            {
-                DebugMenuItem.Visibility = Visibility.Visible;
-            }
+            Application.Current.Resources.Remove(AutoHideScrollBarsKey);
         }
 
-        partial void SetStartPage();
+        private void AutoHideScrollBarsOff_Checked(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Resources[AutoHideScrollBarsKey] = false;
+        }
+
+        private void AutoHideScrollBarsOn_Checked(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Resources[AutoHideScrollBarsKey] = true;
+        }
 
         private void ContextMenu_Loaded(object sender, RoutedEventArgs e)
         {
@@ -106,33 +115,18 @@ namespace PCManager.WPFUI.Navigation
             var menu = (ContextMenu)sender;
             var tabItem = (TabItem)menu.PlacementTarget;
             var content = (FrameworkElement)tabItem.Content;
-            FindMenuItem(menu, ThemeManager.GetRequestedTheme(content)).IsChecked = true;
-        }
-
-        private void ToggleTheme(object sender, RoutedEventArgs e)
-        {
-            GetTabItemContent(sender as MenuItem)?.ToggleTheme();
-        }
-
-        private void ThemeMenuItem_Checked(object sender, RoutedEventArgs e)
-        {
-            //Debug.WriteLine($"{((RadioMenuItem)e.Source).Header} checked");
-            var menuItem = (RadioMenuItem)e.Source;
-            var tabItemContent = GetTabItemContent(menuItem);
-            if (tabItemContent != null)
-            {
-                ThemeManager.SetRequestedTheme(tabItemContent, (ElementTheme)menuItem.Tag);
-            }
-        }
-
-        private void ThemeMenuItem_Unchecked(object sender, RoutedEventArgs e)
-        {
-            //Debug.WriteLine($"{((RadioMenuItem)e.Source).Header} unchecked");
+            this.FindMenuItem(menu, ThemeManager.GetRequestedTheme(content)).IsChecked = true;
         }
 
         private RadioMenuItem FindMenuItem(ContextMenu menu, ElementTheme theme)
         {
             return menu.Items.OfType<RadioMenuItem>().First(x => (ElementTheme)x.Tag == theme);
+        }
+
+        private void ForceGC(object sender, RoutedEventArgs e)
+        {
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
         }
 
         private FrameworkElement GetTabItemContent(MenuItem menuItem)
@@ -142,17 +136,47 @@ namespace PCManager.WPFUI.Navigation
 
         private void NavigateToSelectedPage()
         {
-            if (PagesList.SelectedValue is Type type)
+            if (this.PagesList.SelectedValue is Type type)
             {
                 RootFrame?.Navigate(type);
             }
         }
 
-        private void PagesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void NewWindow(object sender, RoutedEventArgs e)
         {
-            if (!_ignoreSelectionChange)
+            var thread = new Thread(
+                () =>
+                    {
+                        var window = new MainWindow();
+                        window.Closed += delegate
+                            {
+                                Dispatcher.CurrentDispatcher.BeginInvokeShutdown(DispatcherPriority.Normal);
+                            };
+                        window.Show();
+                        Dispatcher.Run();
+                    });
+            thread.SetApartmentState(ApartmentState.STA);
+            thread.IsBackground = true;
+            thread.Start();
+        }
+
+        private void OnControlsSearchBoxQuerySubmitted(
+            AutoSuggestBox sender,
+            AutoSuggestBoxQuerySubmittedEventArgs args)
+        {
+            if (args.ChosenSuggestion != null && args.ChosenSuggestion is ControlInfoDataItem)
             {
-                NavigateToSelectedPage();
+                var pageType = (args.ChosenSuggestion as ControlInfoDataItem).PageType;
+                RootFrame.Navigate(pageType);
+            }
+            else if (!string.IsNullOrEmpty(args.QueryText))
+            {
+                var item = this._controlPagesData.FirstOrDefault(
+                    i => i.Title.Equals(args.QueryText, StringComparison.OrdinalIgnoreCase));
+                if (item != null)
+                {
+                    RootFrame.Navigate(item.PageType);
+                }
             }
         }
 
@@ -163,7 +187,7 @@ namespace PCManager.WPFUI.Navigation
             if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
             {
                 var querySplit = sender.Text.Split(' ');
-                var matchingItems = _controlPagesData.Where(
+                var matchingItems = this._controlPagesData.Where(
                     item =>
                         {
                             // Idea: check for every word entered (separated by space) if it is in the name,  
@@ -195,29 +219,61 @@ namespace PCManager.WPFUI.Navigation
                 }
                 else
                 {
-                    this.ControlsSearchBox.ItemsSource = new string[] { "No results found" };
+                    this.ControlsSearchBox.ItemsSource = new[] { "No results found" };
                 }
             }
         }
 
-        private void OnControlsSearchBoxQuerySubmitted(
-            AutoSuggestBox sender,
-            AutoSuggestBoxQuerySubmittedEventArgs args)
+        private void OnThemeButtonClick(object sender, RoutedEventArgs e)
         {
-            if (args.ChosenSuggestion != null && args.ChosenSuggestion is ControlInfoDataItem)
+            if (ThemeManager.Current.ActualApplicationTheme == ApplicationTheme.Dark)
             {
-                var pageType = (args.ChosenSuggestion as ControlInfoDataItem).PageType;
-                RootFrame.Navigate(pageType);
+                ThemeManager.Current.ApplicationTheme = ApplicationTheme.Light;
             }
-            else if (!string.IsNullOrEmpty(args.QueryText))
+            else
             {
-                var item = _controlPagesData.FirstOrDefault(
-                    i => i.Title.Equals(args.QueryText, StringComparison.OrdinalIgnoreCase));
-                if (item != null)
-                {
-                    RootFrame.Navigate(item.PageType);
-                }
+                ThemeManager.Current.ApplicationTheme = ApplicationTheme.Dark;
             }
+        }
+
+        private void PagesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!this._ignoreSelectionChange)
+            {
+                this.NavigateToSelectedPage();
+            }
+        }
+
+        private void Default_Checked(object sender, RoutedEventArgs e)
+        {
+            SetApplicationTheme(null);
+        }
+
+        private void Light_Checked(object sender, RoutedEventArgs e)
+        {
+            SetApplicationTheme(ApplicationTheme.Light);
+        }
+
+        private void Dark_Checked(object sender, RoutedEventArgs e)
+        {
+            SetApplicationTheme(ApplicationTheme.Dark);
+        }
+
+        private void PresetMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (e.OriginalSource is MenuItem menuItem)
+            {
+                PresetManager.Current.ColorPreset = (string)menuItem.Header;
+            }
+        }
+
+        private void RootFrame_Navigated(object sender, NavigationEventArgs e)
+        {
+            Debug.Assert(!RootFrame.CanGoForward);
+
+            this._ignoreSelectionChange = true;
+            this.PagesList.SelectedValue = RootFrame.CurrentSourcePageType;
+            this._ignoreSelectionChange = false;
         }
 
         private void RootFrame_Navigating(object sender, NavigatingCancelEventArgs e)
@@ -228,36 +284,28 @@ namespace PCManager.WPFUI.Navigation
             }
         }
 
-        private void RootFrame_Navigated(object sender, NavigationEventArgs e)
+        private void SetApplicationTheme(ApplicationTheme? theme)
         {
-            Debug.Assert(!RootFrame.CanGoForward);
-
-            _ignoreSelectionChange = true;
-            PagesList.SelectedValue = RootFrame.CurrentSourcePageType;
-            _ignoreSelectionChange = false;
+            {
+                ThemeManager.Current.ApplicationTheme = theme;
+            }
         }
 
-        //private void Default_Checked(object sender, RoutedEventArgs e)
-        //{
-        //    SetApplicationTheme(null);
-        //}
+        partial void SetStartPage();
 
-        //private void Light_Checked(object sender, RoutedEventArgs e)
-        //{
-        //    SetApplicationTheme(ApplicationTheme.Light);
-        //}
-
-        //private void Dark_Checked(object sender, RoutedEventArgs e)
-        //{
-        //    SetApplicationTheme(ApplicationTheme.Dark);
-        //}
-
-        private void PresetMenuItem_Click(object sender, RoutedEventArgs e)
+        private void ShadowsAuto_Checked(object sender, RoutedEventArgs e)
         {
-            if (e.OriginalSource is MenuItem menuItem)
-            {
-                //PresetManager.Current.ColorPreset = (string)menuItem.Header;
-            }
+            Application.Current.Resources.Remove(SystemParameters.DropShadowKey);
+        }
+
+        private void ShadowsDisabled_Checked(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Resources[SystemParameters.DropShadowKey] = false;
+        }
+
+        private void ShadowsEnabled_Checked(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Resources[SystemParameters.DropShadowKey] = true;
         }
 
         private void SizingMenuItem_Click(object sender, RoutedEventArgs e)
@@ -275,124 +323,69 @@ namespace PCManager.WPFUI.Navigation
             }
         }
 
-        private void ShadowsAuto_Checked(object sender, RoutedEventArgs e)
+        private void ThemeMenuItem_Checked(object sender, RoutedEventArgs e)
         {
-            Application.Current.Resources.Remove(SystemParameters.DropShadowKey);
-        }
-
-        private void ShadowsEnabled_Checked(object sender, RoutedEventArgs e)
-        {
-            Application.Current.Resources[SystemParameters.DropShadowKey] = true;
-        }
-
-        private void ShadowsDisabled_Checked(object sender, RoutedEventArgs e)
-        {
-            Application.Current.Resources[SystemParameters.DropShadowKey] = false;
-        }
-
-        private void AutoHideScrollBarsAuto_Checked(object sender, RoutedEventArgs e)
-        {
-            Application.Current.Resources.Remove(AutoHideScrollBarsKey);
-        }
-
-        private void AutoHideScrollBarsOn_Checked(object sender, RoutedEventArgs e)
-        {
-            Application.Current.Resources[AutoHideScrollBarsKey] = true;
-        }
-
-        private void AutoHideScrollBarsOff_Checked(object sender, RoutedEventArgs e)
-        {
-            Application.Current.Resources[AutoHideScrollBarsKey] = false;
-        }
-
-        private void ForceGC(object sender, RoutedEventArgs e)
-        {
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-        }
-
-        private void NewWindow(object sender, RoutedEventArgs e)
-        {
-            var thread = new Thread(
-                () =>
-                    {
-                        var window = new MainWindow();
-                        window.Closed += delegate
-                            {
-                                Dispatcher.CurrentDispatcher.BeginInvokeShutdown(DispatcherPriority.Normal);
-                            };
-                        window.Show();
-                        Dispatcher.Run();
-                    });
-            thread.SetApartmentState(ApartmentState.STA);
-            thread.IsBackground = true;
-            thread.Start();
-        }
-
-        private void OnThemeButtonClick(object sender, RoutedEventArgs e)
-        {
-
-
-                if (ThemeManager.Current.ActualApplicationTheme == ApplicationTheme.Dark)
-                {
-                    ThemeManager.Current.ApplicationTheme = ApplicationTheme.Light;
-                }
-                else
-                {
-                    ThemeManager.Current.ApplicationTheme = ApplicationTheme.Dark;
-                }
-
-        }
-
-        private void SetApplicationTheme(ApplicationTheme? theme)
-        {
-
+            //Debug.WriteLine($"{((RadioMenuItem)e.Source).Header} checked");
+            var menuItem = (RadioMenuItem)e.Source;
+            var tabItemContent = this.GetTabItemContent(menuItem);
+            if (tabItemContent != null)
             {
-                ThemeManager.Current.ApplicationTheme = theme;
+                ThemeManager.SetRequestedTheme(tabItemContent, (ElementTheme)menuItem.Tag);
             }
         }
 
-        //private void OnColorPresetChanged(object sender, EventArgs e)
-        //{
-        //    {
-        //        PresetsMenu.Items
-        //        .OfType<RadioMenuItem>()
-        //        .Single(mi => mi.Header.ToString() == PresetManager.Current.ColorPreset)
-        //        .IsChecked = true;
-        //    }
-        //}
+        private void ThemeMenuItem_Unchecked(object sender, RoutedEventArgs e)
+        {
+            //Debug.WriteLine($"{((RadioMenuItem)e.Source).Header} unchecked");
+        }
+
+        private void ToggleTheme(object sender, RoutedEventArgs e)
+        {
+            this.GetTabItemContent(sender as MenuItem)?.ToggleTheme();
+        }
+
+        private void OnColorPresetChanged(object sender, EventArgs e)
+        {
+            //{
+            //    PresetsMenu.Items
+            //    .OfType<RadioMenuItem>()
+            //    .Single(mi => mi.Header.ToString() == PresetManager.Current.ColorPreset)
+            //    .IsChecked = true;
+            //}
+        }
     }
 
     public class ControlPagesData : List<ControlInfoDataItem>
+    {
+        public ControlPagesData()
         {
-            public ControlPagesData()
-            {
-                AddPage(typeof(SliderPage));
-                AddPage(typeof(WindowPage), "test");
-            }
-
-            private void AddPage(Type pageType, string displayName = null)
-            {
-                Add(new ControlInfoDataItem(pageType, displayName));
-            }
+            this.AddPage(typeof(PCManagerInfoView), "PC Manager Info");
+            this.AddPage(typeof(SliderPage), "Slider Page for testing");
+            this.AddPage(typeof(ProcessMonitorView), "Monitored Application");
+            this.AddPage(typeof(PCNetworkListenerView), "PC Network Monitor");
         }
 
-        public class ControlInfoDataItem
+        private void AddPage(Type pageType, string displayName = null)
         {
-            public ControlInfoDataItem(Type pageType, string title = null)
-            {
-                PageType = pageType;
-                Title = title ?? pageType.Name.Replace("Page", null);
-            }
-
-            public string Title { get; }
-
-            public Type PageType { get; }
-
-            public override string ToString()
-            {
-                return Title;
-            }
+            this.Add(new ControlInfoDataItem(pageType, displayName));
         }
     }
 
+    public class ControlInfoDataItem
+    {
+        public ControlInfoDataItem(Type pageType, string title = null)
+        {
+            this.PageType = pageType;
+            this.Title = title ?? pageType.Name.Replace("Page", null);
+        }
+
+        public Type PageType { get; }
+
+        public string Title { get; }
+
+        public override string ToString()
+        {
+            return this.Title;
+        }
+    }
+}

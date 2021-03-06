@@ -10,21 +10,17 @@ using System.Reflection;
 using System.Text.Json;
 using System.Windows;
 using System.Windows.Data;
-
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Serilog;
-using Serilog.Events;
-using Serilog.Sinks.Observable;
 using ModernWpf.Controls;
 using PCManager.WPFUI.Helpers;
-using PCManager.WPFUI.Navigation;
 using PCManager.WPFUI.Properties;
-
-using Serilog.Core;
+using Serilog;
 
 using ThreeByteLibrary.Dotnet;
+
+using Frame = System.Windows.Controls.Frame;
 
 namespace PCManager.WPFUI
 {
@@ -35,19 +31,24 @@ namespace PCManager.WPFUI
     {
         public MainWindow()
         {
-            InitializeComponent();
+            this.InitializeComponent();
+            Console.WriteLine("hello");
             this.SetupApp();
+            this.LogTest();
 
             var rootFrame = NavigationRootPage.RootFrame;
-            SetBinding(
+            this.SetBinding(
                 TitleBar.IsBackButtonVisibleProperty,
-                new Binding
-                    {
-                        Path = new PropertyPath(System.Windows.Controls.Frame.CanGoBackProperty), 
-                        Source = rootFrame
-                    });
+                new Binding { Path = new PropertyPath(Frame.CanGoBackProperty), Source = rootFrame });
 
             this.SubscribeToResourcesChanged();
+        }
+
+        public void LogTest()
+        {
+            int a = 1;
+            int b = 4;
+            Log.Logger.Error("i'm messing with ints {a} {b}", a, b);
         }
 
         public void SetupApp()
@@ -55,49 +56,50 @@ namespace PCManager.WPFUI
             var builder = new ConfigurationBuilder();
             BuildConfig(builder);
 
-            Log.Logger = new LoggerConfiguration()
-                .ReadFrom.Configuration(builder.Build())
-                .Enrich.FromLogContext()
-                .WriteTo.Console()
-                .WriteTo.File("log.txt")
-                //.WriteTo.EventLog("ThreeBytePCManager",
-                //    "Application", ".", false,
-                //    "{Message}", restrictedToMinimumLevel: LogEventLevel.Verbose, eventIdProvider: null,
-                //    formatProvider: null)
-                .CreateLogger();
-            
-            this.LogTest();
-            
-            Log.Logger.Information($"{DateTime.Now:HH:mm:ss.fff} | Application Starting");
-            Log.Logger.ForContext<MainWindow>().Information("sds");
-            Log.Logger.Information("hello from some clas?");
+            Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(builder.Build()).WriteTo
+                .SQLite(Properties.Resources.SQLiteDBPath).CreateLogger();
 
-            var host = Host.CreateDefaultBuilder()
-                .ConfigureServices((context, services) =>
+            var host = Host.CreateDefaultBuilder().ConfigureServices(
+                (context, services) =>
                     {
                         services.AddTransient<IPcNetworkListener, PcNetworkListener>();
-                    })
-                .UseSerilog()
-                .Build();
+                    }).UseSerilog().Build();
+
+            // launch the class
+            var svcPcNetworkListener = ActivatorUtilities.CreateInstance<PcNetworkListener>(host.Services);
+            svcPcNetworkListener.Run();
         }
 
-        public void LogTest()
+        protected override void OnClosing(CancelEventArgs e)
         {
-            int a = 1;
-            int b = 4;
-            Log.Logger.Error("i'm messing with ints {a} {b}", a,b);
+            base.OnClosing(e);
 
-
+            if (!e.Cancel)
+            {
+                if (this == Application.Current.MainWindow)
+                {
+                    Settings.Default.MainWindowPlacement = this.GetPlacement();
+                    Settings.Default.Save();
+                }
+            }
         }
 
-        static void BuildConfig(IConfigurationBuilder builder)
+        protected override void OnSourceInitialized(EventArgs e)
         {
-            builder.SetBasePath("C:\\ThreeByteIntermedia\\CrestronNetworkMonitor\\Settings\\")
-                .AddJsonFile("appsettings.json", false, true)
-                .AddJsonFile(
-                    $"appsettings.json.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json",
-                    true)
-                .AddEnvironmentVariables();
+            base.OnSourceInitialized(e);
+
+            if (this == Application.Current.MainWindow)
+            {
+                this.SetPlacement(Settings.Default.MainWindowPlacement);
+            }
+        }
+
+        private static void BuildConfig(IConfigurationBuilder builder)
+        {
+            builder.SetBasePath(Properties.Resources.LocalDataFolder).AddJsonFile(
+                Properties.Resources.AppSettingsFile,
+                false,
+                true);
         }
 
         private static void CreateLocalDirectoryForAppFiles()
@@ -112,37 +114,10 @@ namespace PCManager.WPFUI
             }
 
             string file = $"{desiredFolder}appsettings.json";
-            var options = new JsonSerializerOptions
-                              {
-                                  WriteIndented = true
-                              };
+            var options = new JsonSerializerOptions { WriteIndented = true };
 
             string jsonString = JsonSerializer.Serialize(jsonSettings, options);
             File.WriteAllText(file, jsonString);
-        }
-
-        protected override void OnSourceInitialized(EventArgs e)
-        {
-            base.OnSourceInitialized(e);
-
-                if (this == Application.Current.MainWindow)
-                {
-                    this.SetPlacement(Settings.Default.MainWindowPlacement);
-                }
-        }
-
-        protected override void OnClosing(CancelEventArgs e)
-        {
-            base.OnClosing(e);
-
-            if (!e.Cancel)
-            {
-                if (this == Application.Current.MainWindow)
-                    {
-                        Settings.Default.MainWindowPlacement = this.GetPlacement();
-                        Settings.Default.Save();
-                    }
-            }
         }
 
         /*protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
@@ -164,21 +139,23 @@ namespace PCManager.WPFUI
             }
         }
 
+        private void OnResourcesChanged(object sender, EventArgs e)
+        {
+        }
+
         [Conditional("DEBUG")]
         private void SubscribeToResourcesChanged()
         {
             Type t = typeof(FrameworkElement);
             EventInfo ei = t.GetEvent("ResourcesChanged", BindingFlags.NonPublic | BindingFlags.Instance);
             Type tDelegate = ei.EventHandlerType;
-            MethodInfo h = GetType().GetMethod(nameof(OnResourcesChanged), BindingFlags.NonPublic | BindingFlags.Instance);
+            MethodInfo h = this.GetType().GetMethod(
+                nameof(this.OnResourcesChanged),
+                BindingFlags.NonPublic | BindingFlags.Instance);
             Delegate d = Delegate.CreateDelegate(tDelegate, this, h);
             MethodInfo addHandler = ei.GetAddMethod(true);
             object[] addHandlerArgs = { d };
             addHandler.Invoke(this, addHandlerArgs);
-        }
-
-        private void OnResourcesChanged(object sender, EventArgs e)
-        {
         }
     }
 }

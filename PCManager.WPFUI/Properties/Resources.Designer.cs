@@ -61,7 +61,7 @@ namespace PCManager.WPFUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to appsettings.json.
+        ///   Looks up a localized string similar to C:\ThreeByteIntermedia\PCManager\Settings\appsettings.json.
         /// </summary>
         public static string AppSettingsFile {
             get {
@@ -70,7 +70,16 @@ namespace PCManager.WPFUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\ThreeByteIntermedia\CrestronNetworkMonitor\Settings\.
+        ///   Looks up a localized string similar to Data Source=C:\ThreeByteIntermedia\PCManager\Logs\log.db;Version=3;Read Only=True;.
+        /// </summary>
+        public static string ConnectionString {
+            get {
+                return ResourceManager.GetString("ConnectionString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to C:\ThreeByteIntermedia\PCManager\Settings\.
         /// </summary>
         public static string LocalDataFolder {
             get {
@@ -79,11 +88,20 @@ namespace PCManager.WPFUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\ThreeByteIntermedia\CrestronNetworkMonitor\Settings\appsettings.json.
+        ///   Looks up a localized string similar to C:\ThreeByteIntermedia\PCManager\Settings\appsettings.json.
         /// </summary>
         public static string LocalDataFolderFile {
             get {
                 return ResourceManager.GetString("LocalDataFolderFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to C:\ThreeByteIntermedia\PCManager\Logs\log.db.
+        /// </summary>
+        public static string SQLiteDBPath {
+            get {
+                return ResourceManager.GetString("SQLiteDBPath", resourceCulture);
             }
         }
     }

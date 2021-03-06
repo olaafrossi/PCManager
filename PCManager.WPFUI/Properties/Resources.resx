@@ -118,12 +118,18 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AppSettingsFile" xml:space="preserve">
-    <value>appsettings.json</value>
+    <value>C:\ThreeByteIntermedia\PCManager\Settings\appsettings.json</value>
+  </data>
+  <data name="ConnectionString" xml:space="preserve">
+    <value>Data Source=C:\ThreeByteIntermedia\PCManager\Logs\log.db;Version=3;Read Only=True;</value>
   </data>
   <data name="LocalDataFolder" xml:space="preserve">
-    <value>C:\ThreeByteIntermedia\CrestronNetworkMonitor\Settings\</value>
+    <value>C:\ThreeByteIntermedia\PCManager\Settings\</value>
   </data>
   <data name="LocalDataFolderFile" xml:space="preserve">
-    <value>C:\ThreeByteIntermedia\CrestronNetworkMonitor\Settings\appsettings.json</value>
+    <value>C:\ThreeByteIntermedia\PCManager\Settings\appsettings.json</value>
+  </data>
+  <data name="SQLiteDBPath" xml:space="preserve">
+    <value>C:\ThreeByteIntermedia\PCManager\Logs\log.db</value>
   </data>
 </root>

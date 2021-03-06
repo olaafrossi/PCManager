@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
   <PropertyGroup>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
+    <DisableWinExeOutputInference>true</DisableWinExeOutputInference>
     <TargetFramework>net5.0-windows10.0.19041.0</TargetFramework>
     <UseWPF>true</UseWPF>
     <StartupObject></StartupObject>
@@ -17,28 +18,43 @@
 
   
     <ItemGroup>
-    <PackageReference Include="ModernWpfUI" Version="0.9.3" />
+      <PackageReference Include="JetBrains.Annotations" Version="2021.1.0-eap01" />
+
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
+      <PackageReference Include="Serilog.Enrichers.AssemblyName" Version="1.0.9" />
+    <PackageReference Include="Serilog.Enrichers.Context" Version="4.2.0" />
+    <PackageReference Include="Serilog.Enrichers.Environment" Version="2.1.3" />
+    <PackageReference Include="Serilog.Enrichers.Process" Version="2.0.1" />
+    <PackageReference Include="Serilog.Enrichers.Thread" Version="3.1.0" />
+    <PackageReference Include="Serilog.Formatting.Compact" Version="1.1.0" />
+      <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
+    <PackageReference Include="Serilog.Sinks.File" Version="4.1.0" />
+    <PackageReference Include="Serilog.Sinks.SQLite" Version="5.0.0" /> 
+      <PackageReference Include="ModernWpfUI" Version="0.9.3" />
     <PackageReference Include="JetBrains.Annotations" Version="2021.1.0-eap01" />
     <PackageReference Include="OSVersionHelper" Version="1.1.24" />
     <PackageReference Include="AppInsights.WindowsDesktop" Version="2.17.1" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
-    <PackageReference Include="Serilog.Extensions.Hosting" Version="3.1.0" />
+      <PackageReference Include="Serilog.Extensions.Hosting" Version="3.1.0" />
+    <PackageReference Include="Serilog.Settings.AppSettings" Version="2.2.2" />
     <PackageReference Include="Serilog.Settings.Configuration" Version="3.1.0" />
     <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
     <PackageReference Include="Serilog.Sinks.EventLog" Version="3.1.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="4.1.0" />
     <PackageReference Include="Serilog.Sinks.Observable" Version="2.0.2" />
+    <PackageReference Include="Serilog.Sinks.SQLite" Version="5.0.0" />
   </ItemGroup>
 
   
     <ItemGroup>
-      <Folder Include="Common\" />
       <Folder Include="Converters\" />
+      <Folder Include="Presets\" />
     </ItemGroup>
 
   
     <ItemGroup>
       <ProjectReference Include="..\..\ThreeByteLibrary\ThreeByteLibrary.Dotnet\ThreeByteLibrary.Dotnet.csproj" />
+      <ProjectReference Include="..\PCManager.DataAccess.Library\PCManager.DataAccess.Library.csproj" />
     </ItemGroup>
 
   
@@ -65,6 +81,9 @@
 
   
     <ItemGroup>
+      <None Update="Properties\appsettings.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
       <None Update="Properties\Settings.settings">
         <Generator>SettingsSingleFileGenerator</Generator>
         <LastGenOutput>Settings.Designer.cs</LastGenOutput>

@@ -2,92 +2,115 @@
 // Created: 2021 02 28
 // by Olaaf Rossi
 
-using PCManager.WPFUI.Controllers;
-using Serilog;
-using System.ComponentModel;
-using System.IO;
-using System.Runtime.CompilerServices;
+using System;
+using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Navigation;
+using System.Windows.Threading;
+
+using PCManager.DataAccess.Library;
+using PCManager.WPFUI.Controllers;
+
+using Serilog;
 
 namespace PCManager.WPFUI.ControlPages
 {
     /// <summary>
     ///     Interaction logic for PCManagerInfoView.xaml
     /// </summary>
-    public partial class PCManagerInfoView : INotifyPropertyChanged
+    public partial class PCManagerInfoView
     {
+        private readonly Stopwatch stopwatch;
+
         private readonly PCManagerInfoController viewModel = new();
-
-        private static string logFilePath = "log.txt";
-
-        private string _fileText;
-
-        //INotifyPropertyChanged members
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
 
         public PCManagerInfoView()
         {
-            DataContext = this;
-            Loaded += OnLoaded;
-            InitializeComponent();
-           
+            this.stopwatch = Stopwatch.StartNew();
+            this.Loaded += this.OnLoaded;
+            this.InitializeComponent();
+            Log.Logger.Information("PCManager Info View Started");
         }
 
-        public string FileText
+        private static string GetConnectionString()
         {
-            get
-            {
-                return _fileText;
-            }
-            set
-            {
-                _fileText = value;
-                OnPropertyChanged(FileText);
-            }
+            string output = string.Empty;
+            output = Properties.Resources.ConnectionString;
+            Log.Logger.Information("Getting SQL Connection String for LogDB {output}", output);
+            return output;
         }
 
-        public void ReadFile(string path)
+        private void CheckForUpdateOnClick(object sender, RoutedEventArgs e)
         {
-            using (FileStream stream = File.Open(logFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            //TODO: implement
+            Log.Logger.Information("Checking for MSIX application update{sender} {e}", sender, e);
+        }
+
+        private void GetDataLogs()
+        {
+            this.stopwatch.Restart();
+            SQLiteCRUD sql = new SQLiteCRUD(GetConnectionString());
+            string logComboBoxSelection = string.Empty;
+
+            // get the number of logs from the user
+            this.Dispatcher.Invoke(() => { return logComboBoxSelection = this.LogSelectComboBox.SelectionBoxItem.ToString(); });
+            int numOfLogs = 20;
+            try
             {
-                using (StreamReader reader = new StreamReader(stream))
-                {
-                    while (!reader.EndOfStream)
-                    {
-                        FileText = stream.ToString();
-                    }
-                }
+                numOfLogs = int.Parse(logComboBoxSelection);
+                Log.Logger.Information("Getting Data Logs{numOfLogs}", numOfLogs);
+            }
+            catch (Exception e)
+            {
+                Log.Logger.Error("Didn't parse the number in the Log ComboBox (this is impossible) {numOfLogs}", numOfLogs);
             }
 
-            //FileText = File.OpenRead(logFilePath).ToString();
+            var rows = sql.GetSomeLogs(numOfLogs);
 
-            OnPropertyChanged(FileText);
-            //WriteLine(FileText);
+            // insert the rows into the LogGrid
+            this.Dispatcher.Invoke(() => { this.LogGrid.ItemsSource = rows; }, DispatcherPriority.DataBind);
+
+            _ = this.Dispatcher.BeginInvoke(() => { this.LoadTimeTextBlock.Text = $" DB query time: {this.stopwatch.ElapsedMilliseconds} ms"; }, DispatcherPriority.DataBind);
+            Log.Logger.Information("Inserted DB rows into the LogGrid in {this.stopwatch.ElapsedMilliseconds}", this.stopwatch.ElapsedMilliseconds);
+            this.stopwatch.Stop();
+        }
+
+        private void LinkTo3ByteOnRequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            Log.Logger.Information("User clicked {sender} {e}", sender, e);
+            var destURL = "https://www.google.com/";
+            var sInfo = new ProcessStartInfo(destURL) { UseShellExecute = true };
+            Process.Start(sInfo);
+        }
+
+        private void LinkToGitHubProjectOnRequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            Log.Logger.Information("User clicked {sender} {e}", sender, e);
+            var destURL = "https://www.bing.com/";
+            var sInfo = new ProcessStartInfo(destURL) { UseShellExecute = true };
+            Process.Start(sInfo);
+        }
+
+        private void LinkToProjectInstallerOnRequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            Log.Logger.Information("User clicked {sender} {e}", sender, e);
+            var destURL = "https://www.bing.com/";
+            var sInfo = new ProcessStartInfo(destURL) { UseShellExecute = true };
+            Process.Start(sInfo);
         }
 
         private async void OnLoaded(object sender, RoutedEventArgs e)
         {
-            Loaded -= OnLoaded;
-            DataContext = await viewModel.GetDataAsync();
-            ReadFile(logFilePath);
+            this.Loaded -= this.OnLoaded;
+            this.DataContext = await this.viewModel.GetAppDataAsync().ConfigureAwait(true);
+            await Task.Run(this.GetDataLogs).ConfigureAwait(true);
         }
 
-        //public void WriteLine(string input)
-        //{
-        //    Dispatcher.Invoke(() =>
-        //        {
-        //            PCManagerAppLogText.AppendText($"{input} \n");
-        //            PCManagerAppLogText.ScrollToEnd();
-        //        });
-        //}
-
-        private void AddToLogOnClick(object sender, RoutedEventArgs e)
+        private void RefreshLogButtonOnClick(object sender, RoutedEventArgs e)
         {
-            Log.Logger.Information("happy");
+            Log.Logger.Information("Clicked the Refresh Button");
+            this.GetDataLogs();
         }
     }
 }

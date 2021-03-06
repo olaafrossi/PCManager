@@ -5,12 +5,11 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:PCManager.WPFUI"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:navigation="clr-namespace:PCManager.WPFUI.Navigation"
     xmlns:ui="http://schemas.modernwpf.com/2019"
     x:Name="Window"
     Title="PC Manager"
-    Width="500"
-    Height="300"
+    Width="1000"
+    Height="800"
     ui:ThemeManager.IsThemeAware="True"
     ui:TitleBar.IsIconVisible="True"
     ui:WindowHelper.UseModernWindowStyle="True"
@@ -20,5 +19,5 @@
     WindowStartupLocation="CenterScreen">
 
 
-    <navigation:NavigationRootPage x:Name="RootPage" />
+    <local:NavigationRootPage x:Name="RootPage" />
 </Window>
