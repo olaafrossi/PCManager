@@ -48,6 +48,7 @@
   
     <ItemGroup>
       <Folder Include="Converters\" />
+      <Folder Include="ViewModels\" />
       <Folder Include="Presets\" />
     </ItemGroup>
 
