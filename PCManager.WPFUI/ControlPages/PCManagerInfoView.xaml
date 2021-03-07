@@ -218,8 +218,7 @@
                 Height="410"
                 Margin="5,5,5,5"
                 HorizontalAlignment="Left"
-                VerticalAlignment="Top"
-                Background="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}">
+                VerticalAlignment="Top" Background="{DynamicResource SimpleStackPanelBackgroundDarkGrey}">
 
                 <TextBlock Margin="5,5,5,5" Text="PC Manager Options" />
                 <Button
@@ -281,7 +280,7 @@
                 Margin="5,5,5,5"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Top"
-                Background="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}">
+                Background="{DynamicResource SimpleStackPanelBackgroundDarkGrey}">
 
                 <TextBlock Margin="5,5,5,5" Text="Log Grid Options" />
                 <Button

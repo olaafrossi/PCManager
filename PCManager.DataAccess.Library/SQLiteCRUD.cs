@@ -29,5 +29,17 @@ namespace PCManager.DataAccess.Library
             string sql = $"SELECT * FROM Logs ORDER BY iD DESC LIMIT {logCount}";
             return this.db.LoadData<LogModel, dynamic>(sql, new { }, this.connectionString);
         }
+
+        public IList<NetworkMessageModel> GetSomeNetData(int logCount)
+        {
+            string sql = $"SELECT * FROM Messages ORDER BY iD DESC LIMIT {logCount}";
+            return this.db.LoadData<NetworkMessageModel, dynamic>(sql, new { }, this.connectionString);
+        }
+
+        public void InsertNetMessage(NetworkMessageModel msg)
+        {
+            string sql = "insert into Messages (Timestamp, UDPPort, RemoteIP, IncomingMessage, OutgoingMessage) values (@Timestamp, @UDPPort, @RemoteIP, @IncomingMessage, @OutgoingMessage);";
+            this.db.SaveData(sql, new {msg.Timestamp, msg.UDPPort, msg.RemoteIP, msg.IncomingMessage, msg.OutgoingMessage}, this.connectionString);
+        }
     }
 }

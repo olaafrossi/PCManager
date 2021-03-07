@@ -1,48 +1,69 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿// Created by Three Byte Intemedia, Inc. | project: PCManager |
+// Created: 2021 03 06
+// by Olaaf Rossi
 
-using PCManager.WPFUI.Controllers;
+using System;
+using System.Diagnostics;
+using System.Windows;
+using System.Windows.Threading;
+using PCManager.DataAccess.Library;
+using PCManager.DataAccess.Library.Models;
+using Serilog;
 
 using ThreeByteLibrary.Dotnet;
 
 namespace PCManager.WPFUI.ControlPages
 {
     /// <summary>
-    /// Interaction logic for PCNetworkListenerView.xaml
+    ///     Interaction logic for PCNetworkListenerView.xaml
     /// </summary>
     public partial class PCNetworkListenerView
     {
-        private readonly PCNetworkListenerController viewModel = new();
+        private readonly Stopwatch stopwatch;
+
         public PCNetworkListenerView()
         {
-            //this.Loaded += this.OnLoaded;
-            InitializeComponent();
-            //UDPListBox.Document.Blocks.Add(new Paragraph(new Run("Whaa from view class")));
+            this.stopwatch = Stopwatch.StartNew();
+            this.InitializeComponent();
+            this.GetNetworkData();
         }
 
-        private async void OnLoaded(object sender, RoutedEventArgs e)
+        private static string GetConnectionString()
         {
-            this.Loaded -= this.OnLoaded;
-
+            string output = string.Empty;
+            output = Properties.Resources.ConnectionStringNetwork;
+            Log.Logger.Information("Getting SQL Connection String for NetworkDB {output}", output);
+            return output;
         }
 
-        private void UpdateButton_Click(object sender, RoutedEventArgs e)
+        private void GetNetworkData()
         {
-            PCNetworkListenerController.NetworkInputs input = new PCNetworkListenerController.NetworkInputs("Happy happy", DateTime.Now);
+            SQLiteCRUD sql = new SQLiteCRUD(GetConnectionString());
+            var rows = sql.GetSomeNetData(20);
+
+            // insert the rows into the NetworkGrid
+            this.Dispatcher.Invoke(() => { this.NetworkGrid.ItemsSource = rows; }, DispatcherPriority.DataBind);
+            this.stopwatch.Stop();
+        }
+
+        public void SetNetworkData()
+        {
+            SQLiteCRUD sql = new SQLiteCRUD(GetConnectionString());
+
+            NetworkMessageModel netMsg = new NetworkMessageModel();
+            netMsg.IncomingMessage = "Hello";
+            netMsg.OutgoingMessage = "Boo!";
+            netMsg.RemoteIP = "127.2.2.2";
+            netMsg.Timestamp = DateTime.Now.ToLongTimeString();
+            netMsg.UDPPort = 16009;
+
+            sql.InsertNetMessage(netMsg);
+        }
+
+        private void RefreshLogButtonOnClick(object sender, RoutedEventArgs e)
+        {
+            this.SetNetworkData();
+            this.GetNetworkData();
         }
     }
 }

@@ -14,6 +14,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ModernWpf.Controls;
+
+using PCManager.WPFUI.Controllers;
 using PCManager.WPFUI.Helpers;
 using PCManager.WPFUI.Properties;
 using Serilog;
@@ -32,23 +34,8 @@ namespace PCManager.WPFUI
         public MainWindow()
         {
             this.InitializeComponent();
-            Console.WriteLine("hello");
             this.SetupApp();
-            this.LogTest();
-
             var rootFrame = NavigationRootPage.RootFrame;
-            this.SetBinding(
-                TitleBar.IsBackButtonVisibleProperty,
-                new Binding { Path = new PropertyPath(Frame.CanGoBackProperty), Source = rootFrame });
-
-            this.SubscribeToResourcesChanged();
-        }
-
-        public void LogTest()
-        {
-            int a = 1;
-            int b = 4;
-            Log.Logger.Error("i'm messing with ints {a} {b}", a, b);
         }
 
         public void SetupApp()
@@ -63,35 +50,20 @@ namespace PCManager.WPFUI
                 (context, services) =>
                     {
                         services.AddTransient<IPcNetworkListener, PcNetworkListener>();
-                    }).UseSerilog().Build();
+                    })
+                .UseSerilog()
+                .Build();
 
             // launch the class
             var svcPcNetworkListener = ActivatorUtilities.CreateInstance<PcNetworkListener>(host.Services);
             svcPcNetworkListener.Run();
+            svcPcNetworkListener.MessageHit += SvcPcNetworkListener_MessageHit;
         }
 
-        protected override void OnClosing(CancelEventArgs e)
+        private void SvcPcNetworkListener_MessageHit(object sender, PcNetworkListener.PCNetworkListenerMessages e)
         {
-            base.OnClosing(e);
-
-            if (!e.Cancel)
-            {
-                if (this == Application.Current.MainWindow)
-                {
-                    Settings.Default.MainWindowPlacement = this.GetPlacement();
-                    Settings.Default.Save();
-                }
-            }
-        }
-
-        protected override void OnSourceInitialized(EventArgs e)
-        {
-            base.OnSourceInitialized(e);
-
-            if (this == Application.Current.MainWindow)
-            {
-                this.SetPlacement(Settings.Default.MainWindowPlacement);
-            }
+            PCNetworkListenerController netListenerController = new PCNetworkListenerController();
+            netListenerController.SvcPcNetworkListener_MessageHit(sender, e);
         }
 
         private static void BuildConfig(IConfigurationBuilder builder)
@@ -118,44 +90,6 @@ namespace PCManager.WPFUI
 
             string jsonString = JsonSerializer.Serialize(jsonSettings, options);
             File.WriteAllText(file, jsonString);
-        }
-
-        /*protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
-        {
-            base.OnPropertyChanged(e);
-
-            if (e.Property == FocusManager.FocusedElementProperty)
-            {
-                Debug.WriteLine("FocusedElement: " + e.NewValue);
-            }
-        }*/
-
-        private void OnBackRequested(object sender, BackRequestedEventArgs e)
-        {
-            var rootFrame = NavigationRootPage.RootFrame;
-            if (rootFrame.CanGoBack)
-            {
-                rootFrame.GoBack();
-            }
-        }
-
-        private void OnResourcesChanged(object sender, EventArgs e)
-        {
-        }
-
-        [Conditional("DEBUG")]
-        private void SubscribeToResourcesChanged()
-        {
-            Type t = typeof(FrameworkElement);
-            EventInfo ei = t.GetEvent("ResourcesChanged", BindingFlags.NonPublic | BindingFlags.Instance);
-            Type tDelegate = ei.EventHandlerType;
-            MethodInfo h = this.GetType().GetMethod(
-                nameof(this.OnResourcesChanged),
-                BindingFlags.NonPublic | BindingFlags.Instance);
-            Delegate d = Delegate.CreateDelegate(tDelegate, this, h);
-            MethodInfo addHandler = ei.GetAddMethod(true);
-            object[] addHandlerArgs = { d };
-            addHandler.Invoke(this, addHandlerArgs);
         }
     }
 }

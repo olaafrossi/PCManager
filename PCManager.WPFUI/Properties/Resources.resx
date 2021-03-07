@@ -120,8 +120,11 @@
   <data name="AppSettingsFile" xml:space="preserve">
     <value>C:\ThreeByteIntermedia\PCManager\Settings\appsettings.json</value>
   </data>
-  <data name="ConnectionString" xml:space="preserve">
+  <data name="ConnectionStringLogs" xml:space="preserve">
     <value>Data Source=C:\ThreeByteIntermedia\PCManager\Logs\log.db;Version=3;Read Only=True;</value>
+  </data>
+  <data name="ConnectionStringNetwork" xml:space="preserve">
+    <value>Data Source=C:\ThreeByteIntermedia\PCManager\Logs\network.db;Version=3;</value>
   </data>
   <data name="LocalDataFolder" xml:space="preserve">
     <value>C:\ThreeByteIntermedia\PCManager\Settings\</value>

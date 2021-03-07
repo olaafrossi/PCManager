@@ -2,70 +2,60 @@
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Threading;
+
+using PCManager.DataAccess.Library;
+using PCManager.DataAccess.Library.Models;
+
+using Serilog;
+
+using ThreeByteLibrary.Dotnet;
 
 namespace PCManager.WPFUI.Controllers
 {
-    public class PCNetworkListenerController : ObservableCollection<PCNetworkListenerController.NetworkInputs>
+    public class PCNetworkListenerController
     {
+        private readonly Stopwatch stopwatch;
 
-        public PCNetworkListenerController() : base()
+        public PCNetworkListenerController()
         {
-            Add(new NetworkInputs("Hello", DateTime.Now));
-            Add(new NetworkInputs("Hello", DateTime.Now));
+            this.stopwatch = Stopwatch.StartNew();
         }
 
-        public class NetworkInputs : INotifyPropertyChanged
+        public void SvcPcNetworkListener_MessageHit(object sender, PcNetworkListener.PCNetworkListenerMessages e)
         {
-            public event PropertyChangedEventHandler PropertyChanged;
+            Console.WriteLine($"Here I have a message???this is it: {sender}{e}");
+            this.SetNetworkData();
+        }
 
-            private string inputFrame = String.Empty;
+        private static string GetConnectionString()
+        {
+            string output = string.Empty;
+            output = Properties.Resources.ConnectionStringNetwork;
+            Log.Logger.Information("Getting SQL Connection String for NetworkDB {output}", output);
+            return output;
+        }
 
-            private DateTime dateTime;
+        public void SetNetworkData()
+        {
+            SQLiteCRUD sql = new SQLiteCRUD(GetConnectionString());
 
-            // This method is called by the Set accessor of each property.  
-            // The CallerMemberName attribute that is applied to the optional propertyName  
-            // parameter causes the property name of the caller to be substituted as an argument.  
-            private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
-            {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            }
+            NetworkMessageModel netMsg = new NetworkMessageModel();
+            netMsg.IncomingMessage = "Hello";
+            netMsg.OutgoingMessage = "Boo!";
+            netMsg.RemoteIP = "1.1.1.1";
+            netMsg.Timestamp = DateTime.Now.ToLongTimeString();
+            netMsg.UDPPort = 1633009;
 
-            public NetworkInputs(string input, DateTime time)
-            {
-                this.inputFrame = input;
-                this.dateTime = time;
-                NotifyPropertyChanged();
-            }
-
-            public string InputFrame
-            {
-                get
-                {
-                    return this.inputFrame;
-                }
-                set
-                {
-                    this.inputFrame = value;
-                    NotifyPropertyChanged();
-                }
-            }
-
-            public DateTime DateTime
-            {
-                get
-                {
-                    return this.dateTime;
-                }
-                set
-                {
-                    this.dateTime = value;
-                }
-            }
+            sql.InsertNetMessage(netMsg);
+            this.stopwatch.Stop();
         }
     }
 }
+

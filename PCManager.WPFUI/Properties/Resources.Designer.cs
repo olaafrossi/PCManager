@@ -72,9 +72,18 @@ namespace PCManager.WPFUI.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Data Source=C:\ThreeByteIntermedia\PCManager\Logs\log.db;Version=3;Read Only=True;.
         /// </summary>
-        public static string ConnectionString {
+        public static string ConnectionStringLogs {
             get {
-                return ResourceManager.GetString("ConnectionString", resourceCulture);
+                return ResourceManager.GetString("ConnectionStringLogs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data Source=C:\ThreeByteIntermedia\PCManager\Logs\network.db;Version=3;.
+        /// </summary>
+        public static string ConnectionStringNetwork {
+            get {
+                return ResourceManager.GetString("ConnectionStringNetwork", resourceCulture);
             }
         }
         

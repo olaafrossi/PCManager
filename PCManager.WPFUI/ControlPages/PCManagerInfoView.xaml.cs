@@ -36,7 +36,7 @@ namespace PCManager.WPFUI.ControlPages
         private static string GetConnectionString()
         {
             string output = string.Empty;
-            output = Properties.Resources.ConnectionString;
+            output = Properties.Resources.ConnectionStringLogs;
             Log.Logger.Information("Getting SQL Connection String for LogDB {output}", output);
             return output;
         }
