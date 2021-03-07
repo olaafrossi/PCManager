@@ -1,8 +1,9 @@
-﻿using System;
+﻿// Created by Three Byte Intemedia, Inc. | project: PCManager |
+// Created: 2021 03 06
+// by Olaaf Rossi
+
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 using PCManager.DataAccess.Library.Models;
 
 namespace PCManager.DataAccess.Library
@@ -11,7 +12,7 @@ namespace PCManager.DataAccess.Library
     {
         private readonly string connectionString;
 
-        private SQLiteDataAccess db = new SQLiteDataAccess();
+        private readonly SQLiteDataAccess db = new();
 
         public SQLiteCRUD(string connString)
         {
@@ -30,16 +31,28 @@ namespace PCManager.DataAccess.Library
             return this.db.LoadData<LogModel, dynamic>(sql, new { }, this.connectionString);
         }
 
-        public IList<NetworkMessageModel> GetSomeNetData(int logCount)
+        public IList<NetworkMessageModel> GetSomeNetData(int msgCount)
         {
-            string sql = $"SELECT * FROM Messages ORDER BY iD DESC LIMIT {logCount}";
+            string sql = $"SELECT * FROM Network ORDER BY iD DESC LIMIT {msgCount}";
             return this.db.LoadData<NetworkMessageModel, dynamic>(sql, new { }, this.connectionString);
         }
 
         public void InsertNetMessage(NetworkMessageModel msg)
         {
-            string sql = "insert into Messages (Timestamp, UDPPort, RemoteIP, IncomingMessage, OutgoingMessage) values (@Timestamp, @UDPPort, @RemoteIP, @IncomingMessage, @OutgoingMessage);";
-            this.db.SaveData(sql, new {msg.Timestamp, msg.UDPPort, msg.RemoteIP, msg.IncomingMessage, msg.OutgoingMessage}, this.connectionString);
+            string sql =
+                "insert into Network (Timestamp, UDPPort, RemoteIP, RemotePort, IncomingMessage, OutgoingMessage) values (@Timestamp, @UDPPort, @RemoteIP, @RemotePort, @IncomingMessage, @OutgoingMessage);";
+            this.db.SaveData(
+                sql,
+                new
+                    {
+                        msg.Timestamp,
+                        msg.UDPPort,
+                        msg.RemoteIP,
+                        msg.RemotePort,
+                        msg.IncomingMessage,
+                        msg.OutgoingMessage
+                    },
+                this.connectionString);
         }
     }
 }

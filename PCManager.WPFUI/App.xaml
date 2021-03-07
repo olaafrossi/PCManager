@@ -27,7 +27,7 @@
             <common:InverseAppThemeConverter x:Key="InverseAppThemeConverter" />
             <common:BooleanToValueConverter x:Key="booleanToValueConverter" />
             <common:CornerRadiusToDoubleConverter x:Key="CornerRadiusToDoubleConverter" />
-            <SolidColorBrush x:Key="SimpleStackPanelBackgroundDarkGrey" Color="#FF242424"/>
+            <SolidColorBrush x:Key="SimpleStackPanelBackgroundDarkGrey" Color="#FF242424" />
 
 
         </ResourceDictionary>

@@ -16,6 +16,8 @@ namespace PCManager.DataAccess.Library.Models
 
         public string RemoteIP { get; set; }
 
+        public string RemotePort { get; set; }
+
         public string IncomingMessage { get; set; }
 
         public string OutgoingMessage { get; set; }

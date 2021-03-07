@@ -1,10 +1,13 @@
-﻿using System;
+﻿// Created by Three Byte Intemedia, Inc. | project: PCManager |
+// Created: 2021 03 06
+// by Olaaf Rossi
+
 using System.Collections.Generic;
-using System.Text;
-using Dapper;
 using System.Data;
 using System.Data.SQLite;
 using System.Linq;
+
+using Dapper;
 
 namespace PCManager.DataAccess.Library
 {
@@ -18,6 +21,7 @@ namespace PCManager.DataAccess.Library
                 return rows;
             }
         }
+
         public void SaveData<T>(string sqlStatement, T parameters, string connectionString)
         {
             using (IDbConnection connection = new SQLiteConnection(connectionString))

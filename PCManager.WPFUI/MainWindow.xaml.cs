@@ -19,6 +19,7 @@ using PCManager.WPFUI.Controllers;
 using PCManager.WPFUI.Helpers;
 using PCManager.WPFUI.Properties;
 using Serilog;
+using Serilog.Extensions.Hosting;
 
 using ThreeByteLibrary.Dotnet;
 
@@ -60,10 +61,9 @@ namespace PCManager.WPFUI
             svcPcNetworkListener.MessageHit += SvcPcNetworkListener_MessageHit;
         }
 
-        private void SvcPcNetworkListener_MessageHit(object sender, PcNetworkListener.PCNetworkListenerMessages e)
+        private void SvcPcNetworkListener_MessageHit(object sender, NetworkMessagesEventArgs e)
         {
-            PCNetworkListenerController netListenerController = new PCNetworkListenerController();
-            netListenerController.SvcPcNetworkListener_MessageHit(sender, e);
+            PCNetworkListenerController netController = new PCNetworkListenerController(e);
         }
 
         private static void BuildConfig(IConfigurationBuilder builder)

@@ -218,7 +218,8 @@
                 Height="410"
                 Margin="5,5,5,5"
                 HorizontalAlignment="Left"
-                VerticalAlignment="Top" Background="{DynamicResource SimpleStackPanelBackgroundDarkGrey}">
+                VerticalAlignment="Top"
+                Background="{DynamicResource SimpleStackPanelBackgroundDarkGrey}">
 
                 <TextBlock Margin="5,5,5,5" Text="PC Manager Options" />
                 <Button
@@ -392,7 +393,7 @@
                 EnableRowVirtualization="True"
                 GridLinesVisibility="Horizontal"
                 HeadersVisibility="Column"
-                HorizontalScrollBarVisibility="Auto"
+                HorizontalScrollBarVisibility="Visible"
                 IsReadOnly="True"
                 RowDetailsVisibilityMode="Visible"
                 SnapsToDevicePixels="True"

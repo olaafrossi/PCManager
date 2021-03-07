@@ -34,7 +34,7 @@ namespace PCManager.WPFUI.Controllers
         public async Task<IEnumerable<PCManagerAppInfoModel>> GetAppDataAsync()
         {
             output = new ObservableCollection<PCManagerAppInfoModel>();
-            Log.Logger.Information("dfdfd");
+            Log.Logger.Information("Getting Application Data");
 
             output.Add(
                 new PCManagerAppInfoModel

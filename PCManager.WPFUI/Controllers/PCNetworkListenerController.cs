@@ -1,19 +1,12 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Threading;
+﻿// Created by Three Byte Intemedia, Inc. | project: PCManager |
+// Created: 2021 03 06
+// by Olaaf Rossi
+
+using System;
 
 using PCManager.DataAccess.Library;
 using PCManager.DataAccess.Library.Models;
-
-using Serilog;
+using PCManager.WPFUI.Helpers;
 
 using ThreeByteLibrary.Dotnet;
 
@@ -21,41 +14,63 @@ namespace PCManager.WPFUI.Controllers
 {
     public class PCNetworkListenerController
     {
-        private readonly Stopwatch stopwatch;
-
-        public PCNetworkListenerController()
+        public event EventHandler<int> UDPPortSet;
+        
+        public PCNetworkListenerController(NetworkMessagesEventArgs incomingMsg)
         {
-            this.stopwatch = Stopwatch.StartNew();
-        }
-
-        public void SvcPcNetworkListener_MessageHit(object sender, PcNetworkListener.PCNetworkListenerMessages e)
-        {
-            Console.WriteLine($"Here I have a message???this is it: {sender}{e}");
-            this.SetNetworkData();
-        }
-
-        private static string GetConnectionString()
-        {
-            string output = string.Empty;
-            output = Properties.Resources.ConnectionStringNetwork;
-            Log.Logger.Information("Getting SQL Connection String for NetworkDB {output}", output);
-            return output;
-        }
-
-        public void SetNetworkData()
-        {
-            SQLiteCRUD sql = new SQLiteCRUD(GetConnectionString());
-
+            SQLiteCRUD sql = new SQLiteCRUD(ConnectionStringHelper.GetConnectionString(ConnectionStringHelper.DataBases.Network));
             NetworkMessageModel netMsg = new NetworkMessageModel();
-            netMsg.IncomingMessage = "Hello";
-            netMsg.OutgoingMessage = "Boo!";
-            netMsg.RemoteIP = "1.1.1.1";
-            netMsg.Timestamp = DateTime.Now.ToLongTimeString();
-            netMsg.UDPPort = 1633009;
+
+            if (incomingMsg.IncomingMessage is null)
+            {
+                netMsg.IncomingMessage = string.Empty;
+            }
+            else
+            {
+                netMsg.IncomingMessage = incomingMsg.IncomingMessage;
+            }
+
+            if (incomingMsg.OutgoingMessage is null)
+            {
+                netMsg.IncomingMessage = string.Empty;
+            }
+            else
+            {
+                netMsg.OutgoingMessage = incomingMsg.OutgoingMessage;
+            }
+
+            if (incomingMsg.RemoteIP is null)
+            {
+                incomingMsg.RemoteIP = string.Empty;
+            }
+            else
+            {
+                netMsg.RemoteIP = incomingMsg.RemoteIP;
+            }
+
+            if (incomingMsg.IncomingMessage is null)
+            {
+                incomingMsg.Timestamp = string.Empty;
+            }
+            else
+            {
+                netMsg.Timestamp = incomingMsg.Timestamp;
+            }
+
+            if (incomingMsg.RemotePort is null)
+            {
+                incomingMsg.RemotePort = string.Empty;
+            }
+            else
+            {
+                netMsg.RemotePort = incomingMsg.RemotePort;
+            }
+
+            netMsg.UDPPort = incomingMsg.UDPPort;
+
+            this.UDPPortSet?.Invoke(this, incomingMsg.UDPPort);
 
             sql.InsertNetMessage(netMsg);
-            this.stopwatch.Stop();
         }
     }
 }
-

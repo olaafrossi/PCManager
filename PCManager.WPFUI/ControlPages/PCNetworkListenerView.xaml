@@ -12,12 +12,12 @@
     UseLayoutRounding="True"
     mc:Ignorable="d">
 
-    <Page.Resources>
+    <!--<Page.Resources>
         <controllers:PCNetworkListenerController x:Key="InputFrameData" />
     </Page.Resources>
     <Page.DataContext>
         <controllers:PCNetworkListenerController />
-    </Page.DataContext>
+    </Page.DataContext>-->
 
 
 
@@ -111,14 +111,14 @@
                 VerticalAlignment="Top"
                 Background="{DynamicResource SimpleStackPanelBackgroundDarkGrey}">
 
-                <TextBlock Margin="5,5,5,5" Text="PC Manager Options" />
+                <TextBlock Margin="5,5,5,5" Text="Network Options" />
                 <Button
                     x:Name="CheckForUpdate"
                     MinWidth="165"
                     MinHeight="40"
                     Margin="5,10,5,5"
                     HorizontalAlignment="Left"
-                    Content="Check for Update (MSIX)"
+                    Content="Send UDP Frame"
                     Style="{StaticResource AccentButtonStyle}" />
                 <TextBlock
                     Margin="5"
@@ -149,6 +149,14 @@
                     Text="C:\ThreeByteIntermedia\PCManager\Settings\appsettings.json" />
 
             </ui:SimpleStackPanel>
+            <TextBlock
+                Grid.Row="2"
+                Grid.Column="0"
+                Margin="5"
+                FontSize="24"
+                FontWeight="Normal"
+                Foreground="#FFDEA504"
+                Text="Network Log" />
 
             <DataGrid
                 x:Name="NetworkGrid"
@@ -157,7 +165,7 @@
                 Grid.ColumnSpan="2"
                 MinWidth="400"
                 MinHeight="100"
-                MaxHeight="700"
+                MaxHeight="560"
                 Margin="5"
                 AutoGenerateColumns="True"
                 BorderBrush="Gray"
@@ -261,7 +269,7 @@
                     ScrollViewer.CanContentScroll="True"
                     SnapsToDevicePixels="True"
                     Text="C:\ThreeByteIntermedia\PCManager\Logs\network.db" />
-               
+
 
             </ui:SimpleStackPanel>
 

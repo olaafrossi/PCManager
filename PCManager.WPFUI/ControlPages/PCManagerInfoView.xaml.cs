@@ -11,6 +11,7 @@ using System.Windows.Threading;
 
 using PCManager.DataAccess.Library;
 using PCManager.WPFUI.Controllers;
+using PCManager.WPFUI.Helpers;
 
 using Serilog;
 
@@ -33,14 +34,6 @@ namespace PCManager.WPFUI.ControlPages
             Log.Logger.Information("PCManager Info View Started");
         }
 
-        private static string GetConnectionString()
-        {
-            string output = string.Empty;
-            output = Properties.Resources.ConnectionStringLogs;
-            Log.Logger.Information("Getting SQL Connection String for LogDB {output}", output);
-            return output;
-        }
-
         private void CheckForUpdateOnClick(object sender, RoutedEventArgs e)
         {
             //TODO: implement
@@ -50,7 +43,7 @@ namespace PCManager.WPFUI.ControlPages
         private void GetDataLogs()
         {
             this.stopwatch.Restart();
-            SQLiteCRUD sql = new SQLiteCRUD(GetConnectionString());
+            SQLiteCRUD sql = new SQLiteCRUD(ConnectionStringHelper.GetConnectionString(ConnectionStringHelper.DataBases.Logs));
             string logComboBoxSelection = string.Empty;
 
             // get the number of logs from the user
